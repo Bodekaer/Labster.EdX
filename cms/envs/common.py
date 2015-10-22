@@ -1019,9 +1019,3 @@ CREDIT_PROVIDER_TIMESTAMP_EXPIRATION = 15 * 60
 ################################ Deprecated Blocks Info ################################
 
 DEPRECATED_BLOCK_TYPES = ['peergrading', 'combinedopenended']
-
-
-try:
-    from .labster import *  # pylint: disable=import-error
-except ImportError:
-    pass
