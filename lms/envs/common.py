@@ -2560,3 +2560,9 @@ CREDIT_PROVIDER_TIMESTAMP_EXPIRATION = 15 * 60
 # not expected to be active; this setting simply allows administrators to
 # route any messages intended for LTI users to a common domain.
 LTI_USER_EMAIL_DOMAIN = 'lti.example.com'
+
+
+try:
+    from .labster import *  # pylint: disable=import-error
+except ImportError:
+    pass
