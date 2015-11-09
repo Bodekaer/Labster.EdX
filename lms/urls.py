@@ -676,6 +676,10 @@ BADGE_SHARE_TRACKER_URL = url(
     name='badge_share_tracker'
 )
 
+urlpatterns += (
+    url(r'^courses/{}/'.format(settings.COURSE_ID_PATTERN), include('labster_course_license.urls')),
+)
+
 if settings.FEATURES.get('ENABLE_OPENBADGES', False):
     urlpatterns += (BADGE_SHARE_TRACKER_URL,)
 
