@@ -1,9 +1,10 @@
 """
 Registers Teacher Dashboard for the edX platform.
 """
-
+from django.conf import settings
 from django.utils.translation import ugettext_noop
 from xmodule.tabs import CourseTab
+from courseware.access import has_access
 
 
 class TeacherDashboardTab(CourseTab):
@@ -18,4 +19,5 @@ class TeacherDashboardTab(CourseTab):
 
     @classmethod
     def is_enabled(cls, course, user=None):
-        return True
+        is_feature_enabled = settings.LABSTER_FEATURES.get('ENABLE_TEACHER_DASHBOARD', False)
+        return bool(user and has_access(user, 'staff', course, course.id)) and is_feature_enabled

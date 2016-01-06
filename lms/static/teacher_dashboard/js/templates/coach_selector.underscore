@@ -1,9 +1,0 @@
-<label class="col-sm-2 control-label" for="coaches-select">Coaches:</label>
-<div class="col-sm-10">
-  <select id="coaches-select" class="form-control">
-    <option value="">Choose a coach...</option>
-  <% collection.forEach(function(model) { %>
-    <option value="<%- model.get('email') %>"><%- model.getTitle() %></option>
-  <% }); %>
-  </select>
-</div>

@@ -19,18 +19,13 @@
 
 </%block>
 
-
-
-<%include file="/teacher_dashboard/teacher_dashboard.html" args="active_page='teacher_dashboard'" />
-
+<%include file="/courseware/course_navigation.html" args="active_page='teacher_dashboard'" />
 
 <section class="container">
     <div class="info-wrapper">
         <section class="updates">
-            <div id="coach" data-metadata='${coach}' style="display: none">
-            </div>
             <!-- Example row of columns -->
-            <div id="content1"></div>
+            <div id="main-content"></div>
             <hr>
         </section>
     </div>

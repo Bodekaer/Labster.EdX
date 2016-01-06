@@ -9,10 +9,6 @@ define(["underscore", "URI"], function (_, URI) {
     "students": _.template("<%= base %>/licenses/<%=license_id %>/simulations/<%=simulation_id %>/students/")
   };
 
-  utils.addUserToUri = function(uri) {
-    return URI(uri).addQuery({email: window.Labster.coach}).toString();
-  };
-
   utils.getUrl = function(type, context, addUser) {
     var url = "";
 
@@ -21,11 +17,6 @@ define(["underscore", "URI"], function (_, URI) {
     }
     context = _.extendOwn({base: URL_BASE}, context);
     url = URL_TEMPLATES[type](context);
-
-    if (addUser) {
-      return utils.addUserToUri(url);
-    }
-
     return url;
   };
 
