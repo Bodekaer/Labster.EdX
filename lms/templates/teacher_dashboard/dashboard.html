@@ -1,0 +1,37 @@
+<%inherit file="../main.html" />
+<%namespace name='static' file='/static_content.html'/>
+<%!
+    from django.utils.translation import ugettext as _
+    from courseware.courses import get_course_info_section
+%>
+
+<%block name="pagetitle">${_("Teacher Dashboard")}</%block>
+
+<%block name="headextra">
+    <%static:css group='style-course-vendor'/>
+    <%static:css group='style-course'/>
+    <script>window.Labster = window.Labster || {}</script>
+    <script src="${static.url('teacher_dashboard/require_config.js')}"></script>
+    <script data-main="main" src="${static.url('teacher_dashboard/js/vendor/require.js')}"></script>
+
+    <link rel="stylesheet" href="${static.url('teacher_dashboard/css/bootstrap.min.css')}">
+    <link rel="stylesheet" href="${static.url('teacher_dashboard/css/main.css')}">
+
+</%block>
+
+
+
+<%include file="/teacher_dashboard/teacher_dashboard.html" args="active_page='teacher_dashboard'" />
+
+
+<section class="container">
+    <div class="info-wrapper">
+        <section class="updates">
+            <div id="coach" data-metadata='${coach}' style="display: none">
+            </div>
+            <!-- Example row of columns -->
+            <div id="content1"></div>
+            <hr>
+        </section>
+    </div>
+</section>

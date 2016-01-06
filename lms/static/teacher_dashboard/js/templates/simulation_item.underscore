@@ -1,0 +1,18 @@
+<div class="row simulation-item-info">
+  <div class="col-sm-10 simulation-item-name">
+    <% if (is_expanded) { %>
+      <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    <% } else { %>
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <% } %>
+    <%- display_name %>
+  </div>
+  <div class="col-xs-6 col-sm-1 is-metric hide">
+    <span class="glyphicon glyphicon-stats visible-xs-inline" aria-hidden="true"></span>
+    <%- score %>
+  </div>
+  <div class="col-xs-6 col-sm-1 is-metric hide">
+    <span class="glyphicon glyphicon-ok visible-xs-inline" aria-hidden="true"></span>
+    <%- questions_answered %>
+  </div>
+</div>
