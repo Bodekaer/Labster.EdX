@@ -1,39 +1,42 @@
-define([
-  "app/views/base", "underscore", "app/views/license_item"
-], function(BaseView, _, LicenseItemView) {
-  var LicenseListView = BaseView.extend({
-    className: "license-list",
+;(function (define) {
+  'use strict';
+  define([
+    "teacher_dashboard/js/app/views/base", "underscore", "teacher_dashboard/js/app/views/license_item"
+  ], function(BaseView, _, LicenseItemView) {
+    var LicenseListView = BaseView.extend({
+      className: "license-list",
 
-    constructor: function(options) {
-      _.bindAll(this, "renderChildren");
-      this.children = [];
-      BaseView.prototype.constructor.apply(this, arguments);
-      this.listenTo(this.collection, "sync update reset", this.render);
-    },
+      constructor: function(options) {
+        _.bindAll(this, "renderChildren");
+        this.children = [];
+        BaseView.prototype.constructor.apply(this, arguments);
+        this.listenTo(this.collection, "sync update reset", this.render);
+      },
 
-    render: function(context) {
-      BaseView.prototype.render.apply(this, arguments);
-      this.renderChildren();
-      return this;
-    },
+      render: function(context) {
+        BaseView.prototype.render.apply(this, arguments);
+        this.renderChildren();
+        return this;
+      },
 
-    renderChildren: function(collection) {
-      var fragment = document.createDocumentFragment(),
-          children = this.children;
+      renderChildren: function(collection) {
+        var fragment = document.createDocumentFragment(),
+            children = this.children;
 
-      if (children.length) {
-        _.invoke(children, "remove");
-        children.length = 0;
+        if (children.length) {
+          _.invoke(children, "remove");
+          children.length = 0;
+        }
+
+        this.collection.forEach(function(model) {
+          var view = new LicenseItemView({model: model});
+          fragment.appendChild(view.render().el);
+          children.push(view);
+        });
+        this.$el.html(fragment);
       }
+    });
 
-      this.collection.forEach(function(model) {
-        var view = new LicenseItemView({model: model});
-        fragment.appendChild(view.render().el);
-        children.push(view);
-      });
-      this.$el.html(fragment);
-    }
+    return LicenseListView;
   });
-
-  return LicenseListView;
-});
+}).call(this, define || RequireJS.define);
