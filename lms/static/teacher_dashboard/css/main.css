@@ -1,6 +1,7 @@
 header.global nav.nav-wrapper {
   height: 55px;
 }
+
 .navbar-inverse .navbar-brand {
   color: #fff;
 }
@@ -34,8 +35,11 @@ header.global nav.nav-wrapper {
 
 .license-item {
   border: 1px solid rgba(0, 0, 0, 1);
-  margin-bottom: 20px;
   line-height: 2.5rem;
+}
+
+.license-item + .license-item {
+  margin-top: 20px;
 }
 
 .license-item:not(.is-expanded):hover,
