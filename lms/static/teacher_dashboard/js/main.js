@@ -11,6 +11,6 @@
       var licenseCollection = LicenseCollection.factory();
       buildLicenseList(licenseCollection);
       licenseCollection.url = utils.getUrl("licenses", {}, true);
-      licenseCollection.fetch();
+      licenseCollection.fetch({data: {course_id: course_id}});
   });
 }).call(this, define || RequireJS.define);

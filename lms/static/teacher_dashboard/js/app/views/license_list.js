@@ -15,7 +15,13 @@
 
       render: function(context) {
         BaseView.prototype.render.apply(this, arguments);
-        this.renderChildren();
+        if (this.collection.length) {
+          this.renderChildren();
+        } else {
+          this.$el.html(
+            "<div class='simulation-list-empty is-empty-section'>There is no available Licenses.</div>"
+          );
+        }
         return this;
       },
 
