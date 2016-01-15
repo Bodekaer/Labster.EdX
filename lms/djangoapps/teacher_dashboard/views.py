@@ -16,6 +16,7 @@ from teacher_dashboard.utils import _send_request
 
 log = logging.getLogger(__name__)
 
+
 @login_required
 def dashboard_view(request, course_id):
     """
@@ -27,6 +28,7 @@ def dashboard_view(request, course_id):
         course = get_course_by_id(course_key, depth=2)
 
     return render_to_response('teacher_dashboard/dashboard.html', {'course': course, 'course_id': course_id})
+
 
 @login_required
 def licenses_api_call(request):
