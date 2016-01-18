@@ -18,44 +18,46 @@
     <div class="col-xs-12 col-sm-4 col-md-2 <% if (!is_expired_soon) { print('col-sm-offset-2 col-md-offset-1') } %> license-item-export hide">
       <a href="#">Export CSV</a>
     </div>
-    <div class="col-xs-4 col-sm-2 col-md-1 license-item-students is-metric hide" data-tooltip title="Number of active students">
+    <div class="col-xs-4 col-sm-2 col-md-1 license-item-students is-metric hide">
       <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
       <%- students_count %>
+      <span class="hint">Number of students</span>
     </div>
-    <div class="col-xs-4 col-sm-2 col-md-1 license-item-score is-metric hide" data-tooltip title="Score">
+    <div class="col-xs-4 col-sm-2 col-md-1 license-item-score is-metric hide">
       <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
       <%- score %>
+      <span class="hint">Average score</span>
     </div>
-    <div class="col-xs-4 col-sm-2 col-md-1 license-item-total is-metric hide" data-tooltip title="Questions Answered">
+    <div class="col-xs-4 col-sm-2 col-md-1 license-item-total is-metric hide">
       <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
       <%- questions_answered %>
+      <span class="hint">Completed rate</span>
     </div>
 
-    <div class="col-sm-2 col-lg-1 col-lg-offset-2 is-metric" data-tooltip title="Number of Simulations">
+    <div class="col-sm-2 col-lg-1 col-lg-offset-2 is-metric">
       <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
       <%- simulations_count %>
+      <span class="hint hidden-xs hidden-sm">Number of Simulations</span>
     </div>
-    <div class="col-sm-6 col-md-4 col-lg-3 is-metric" data-tooltip title="License expiration dates">
+    <div class="col-sm-6 col-md-4 col-lg-3 is-metric">
       <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
       <%= valid_from %> - <%= valid_to %>
+      <span class="hint hidden-xs hidden-sm">License expiration dates</span>
     </div>
-
   </div>
 </div>
 <% if (is_expanded) { %>
   <div class="license-additional-info hide">
     <div class="row">
-      <div class="col-sm-4 col-lg-2 is-metric invisible" data-tooltip title="Number of inactive students / Total possible amount of students">
-        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-        57/200
-      </div>
-      <div class="col-sm-3 col-lg-1 col-lg-offset-6 is-metric" data-tooltip title="Number of Simulations">
+      <div class="col-sm-3 col-lg-1 col-lg-offset-6 is-metric">
         <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
         <%- simulations_count %>
+        <span class="hint hidden-xs hidden-sm">Number of Simulations</span>
       </div>
-      <div class="col-sm-5 col-lg-3 is-metric" data-tooltip title="License expiration dates">
+      <div class="col-sm-5 col-lg-3 is-metric">
         <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
         <%= valid_from %> - <%= valid_to %>
+        <span class="hint hidden-xs hidden-sm">License expiration dates</span>
       </div>
     </div>
   </div>

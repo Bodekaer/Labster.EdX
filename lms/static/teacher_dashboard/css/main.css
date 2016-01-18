@@ -2,10 +2,6 @@ header.global nav.nav-wrapper {
   height: 55px;
 }
 
-.navbar-inverse .navbar-brand {
-  color: #fff;
-}
-
 .general-info {
   text-align: center;
 }
@@ -21,11 +17,16 @@ header.global nav.nav-wrapper {
 .is-metric {
   font-size: 2rem;
   text-align: center;
-  border-left: 2px solid rgba(0, 0, 0, .1);
 }
 
 .is-metric:first-child {
   border-left: none;
+}
+
+.is-metric .hint {
+  display: block;
+  font-size: 1.3rem;
+  line-height: 1.3;
 }
 
 .license-item-export {
@@ -35,11 +36,8 @@ header.global nav.nav-wrapper {
 
 .license-item {
   border: 1px solid rgba(0, 0, 0, 1);
+  margin-bottom: 20px;
   line-height: 2.5rem;
-}
-
-.license-item + .license-item {
-  margin-top: 20px;
 }
 
 .license-item:not(.is-expanded):hover,
@@ -140,6 +138,10 @@ header.global nav.nav-wrapper {
   margin-right: 5px;
 }
 
+#coaches {
+  margin: 25px 0;
+}
+
 .user-list-item-time{
   font-size: 1.5rem;
 }
@@ -209,5 +211,9 @@ header.global nav.nav-wrapper {
   }
 }
 @media (min-width: 768px) and (max-width: 992px) {}
-@media (min-width: 992px) and (max-width: 1200px) {}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .simulation-list .is-metric .hint {
+    font-size: 1.1rem;
+  }
+}
 @media (min-width: 1200px) {}
