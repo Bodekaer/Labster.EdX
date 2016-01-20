@@ -29,11 +29,6 @@ header.global nav.nav-wrapper {
   line-height: 1.3;
 }
 
-.license-item-export {
-  text-align: center;
-  border-left: 2px solid rgba(0, 0, 0, .1);
-}
-
 .license-item {
   border: 1px solid rgba(0, 0, 0, 1);
   margin-bottom: 20px;
@@ -152,6 +147,15 @@ header.global nav.nav-wrapper {
     -moz-animation: moz-spin .7s infinite linear;
 }
 
+.simulation-item-export {
+  visibility: hidden;
+}
+
+.simulation-item:hover .simulation-item-export,
+.simulation-item:focus .simulation-item-export {
+  visibility: visible;
+}
+
 @-webkit-keyframes webkit-spin {
     from { -webkit-transform: rotate(0deg);}
     to { -webkit-transform: rotate(360deg);}
@@ -175,12 +179,9 @@ header.global nav.nav-wrapper {
     border-bottom: 2px solid rgba(0, 0, 0, .1);
   }
 
-  .license-item-code + .is-metric,
-  .license-item-code + .license-item-export {
+  .license-item-code + .is-metric {
     border-left: none;
   }
-
-  .license-item-export a {display: block;}
 }
 
 @media (max-width: 768px) {

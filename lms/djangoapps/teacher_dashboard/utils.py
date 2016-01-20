@@ -9,6 +9,13 @@ from rest_framework.exceptions import MethodNotAllowed
 log = logging.getLogger(__name__)
 
 
+DEFAULT_HEADERS = {
+    "authorization": 'Token {}'.format(settings.LABSTER_API_AUTH_TOKEN),
+    "content-type": 'application/json',
+    "accept": 'application/json',
+}
+
+
 class LabsterApiError(Exception):
     """
     This exception is raised in the case where problems with Labster API appear.
@@ -16,24 +23,23 @@ class LabsterApiError(Exception):
     pass
 
 
-def _send_request(url, method=None, data=None):
+def _send_request(url, method=None, data=None, params=None, headers=None):
     """
-    Sends a request the Labster API.
+    Sends a request Labster API.
     """
     method = 'GET' if method is None else 'POST'
-    headers = {
-        "authorization": 'Token {}'.format(settings.LABSTER_API_AUTH_TOKEN),
-        "content-type": 'application/json',
-        "accept": 'application/json',
-    }
+
+    _headers = dict(DEFAULT_HEADERS)
+
+    if headers:
+        _headers.update(headers)
+
     try:
         if method == 'POST':
-            response = requests.post(url=url, headers=headers, data=data)
-        elif method == 'GET':
-            response = requests.get(url=url, headers=headers, params=data)
+            response = requests.post(url, headers=_headers, data=data, params=params)
         else:
-            log.exception("Wrong method, only GET, POST available")
-            raise MethodNotAllowed(method)
+            response = requests.get(url, headers=_headers, params=params)
+
         response.raise_for_status()
         return response.content
 

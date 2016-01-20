@@ -17,6 +17,12 @@ from teacher_dashboard.utils import _send_request
 log = logging.getLogger(__name__)
 
 
+MIME_TYPES = {
+    "csv": "text/csv",
+    "json": "application/json"
+}
+
+
 @login_required
 def dashboard_view(request, course_id):
     """
@@ -44,20 +50,38 @@ def licenses_api_call(request):
             course = get_course_by_id(course_key, depth=2)
         passports = course.lti_passports
         consumer_keys = [LtiPassport(passport_str).consumer_key for passport_str in passports]
-        url = settings.LABSTER_ENDPOINTS.get('licenses')
-        response = _send_request(url=url, method='POST', data=json.dumps({'consumer_keys': json.dumps(consumer_keys)}))
+        url = settings.LABSTER_ENDPOINTS.get("licenses")
+        response = _send_request(
+            url,
+            method="POST",
+            data=json.dumps({"consumer_keys": json.dumps(consumer_keys)}),
+        )
     return HttpResponse(response, content_type="application/json")
 
 
 @login_required
 def simulations_api_call(request, license_pk):
     url = settings.LABSTER_ENDPOINTS.get('simulations').format(license_pk)
-    response = _send_request(url=url)
+    response = _send_request(url)
     return HttpResponse(response, content_type="application/json")
 
 
 @login_required
 def students_api_call(request, license_pk, simulation_pk):
+    CONTENT_DESPOSITION_FORMATS = ('csv', )
+
+    if request.GET.get("format") in MIME_TYPES:
+        accept_format = request.GET.get("format")
+    else:
+        accept_format = "json"
+
     url = settings.LABSTER_ENDPOINTS.get('students').format(license_pk, simulation_pk)
-    response = _send_request(url=url)
-    return HttpResponse(response, content_type="application/json")
+    csv = _send_request(url, headers={"accept": MIME_TYPES.get(accept_format)})
+    response = HttpResponse(csv, content_type="application/json")
+
+    if request.GET.get("format") in CONTENT_DESPOSITION_FORMATS:
+        response['Content-Disposition'] = 'attachment; filename="export_student_results.{}"'.format(
+            request.GET.get("format")
+        )
+
+    return response
