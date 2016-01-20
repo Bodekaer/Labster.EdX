@@ -76,8 +76,8 @@ def students_api_call(request, license_pk, simulation_pk):
         accept_format = "json"
 
     url = settings.LABSTER_ENDPOINTS.get('students').format(license_pk, simulation_pk)
-    csv = _send_request(url, headers={"accept": MIME_TYPES.get(accept_format)})
-    response = HttpResponse(csv, content_type="application/json")
+    content = _send_request(url, headers={"accept": MIME_TYPES.get(accept_format)})
+    response = HttpResponse(content, content_type=MIME_TYPES.get(accept_format))
 
     if request.GET.get("format") in CONTENT_DESPOSITION_FORMATS:
         response['Content-Disposition'] = 'attachment; filename="export_student_results.{}"'.format(
