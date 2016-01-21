@@ -54,7 +54,7 @@ def licenses_api_call(request):
         response = _send_request(
             url,
             method="POST",
-            data=json.dumps({"consumer_keys": json.dumps(consumer_keys)}),
+            data=json.dumps({"consumer_keys": consumer_keys}),
         )
     return HttpResponse(response, content_type="application/json")
 
