@@ -29,10 +29,8 @@ def _send_request(url, method=None, data=None, params=None, headers=None):
     """
     method = 'GET' if method is None else 'POST'
 
-    _headers = dict(DEFAULT_HEADERS)
-
-    if headers:
-        _headers.update(headers)
+    _headers = DEFAULT_HEADERS.copy()
+    _headers.update(headers)
 
     try:
         if method == 'POST':

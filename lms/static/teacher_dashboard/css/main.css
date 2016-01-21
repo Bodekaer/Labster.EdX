@@ -31,8 +31,11 @@ header.global nav.nav-wrapper {
 
 .license-item {
   border: 1px solid rgba(0, 0, 0, 1);
-  margin-bottom: 20px;
   line-height: 2.5rem;
+ }
+
+.license-item + .license-item {
+  margin-top: 20px;
 }
 
 .license-item:not(.is-expanded):hover,
@@ -130,10 +133,6 @@ header.global nav.nav-wrapper {
 
 .loading-bar span {
   margin-right: 5px;
-}
-
-#coaches {
-  margin: 25px 0;
 }
 
 .user-list-item-time{
