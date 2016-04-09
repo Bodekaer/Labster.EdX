@@ -117,6 +117,8 @@ def login_and_registration_form(request, initial_mode="login"):
         'allow_iframing': True,
         'disable_courseware_js': True,
     }
+    if request.GET.get('type', None) == '0':
+        context.update({'disable_footer': True, 'disable_header': True, 'disable_window_wrap': True})
 
     return render_to_response('student_account/login_and_register.html', context)
 
