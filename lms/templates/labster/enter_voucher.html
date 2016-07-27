@@ -15,7 +15,7 @@
 
 <%block name="pagetitle">${_("Enter voucher code")}</%block>
 
-<%block name="bodyclass">view-register-voucher</%block>
+<%block name="bodyclass">view-register-voucher is-authenticated</%block>
 
 <%block name="js_extra">
     <script type="text/javascript">
@@ -25,53 +25,56 @@
     </script>
 </%block>
 
-<section class="register container">
-    <section role="main" class="content">
-        <form role="form"
-              id="voucher-register-form"
-              class="login-register"
-              method="post"
-              data-remote="true"
-              action="/activate_voucher"
-              novalidate>
-            <div class="section-title lines">
-                <h2>
-                    <span class="text">${_('Enter Voucher')}</span>
-                </h2>
-            </div>
-            <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+<section class="register container form-type">
+    <section id="register-anchor" class="form-type">
+        <div id="register-form" class="form-wrapper ">
+            <form role="form"
+                  id="voucher-register-form"
+                  class="login-register register-form"
+                  method="post"
+                  data-remote="true"
+                  action="/activate_voucher"
+                  novalidate>
+                <div class="section-title lines">
+                    <h2>
+                        <span class="text">${_('Enter Voucher')}</span>
+                    </h2>
+                </div>
+                <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
 
-            <!-- status messages -->
-            <div role="alert" class="status message">
-                <h3 class="message-title">${_("We're sorry, but this version of your browser is not supported. Try again using a different browser or a newer version of your browser.")}</h3>
-            </div>
+                <!-- status messages -->
+                <div role="alert" class="status message submission-error" tabindex="-1">
+                    <h3 class="message-title">${_("The following errors occurred while processing your voucher code:")} </h3>
+                    <ul class="message-copy"></ul>
+                </div>
 
-            <div role="alert" class="status message submission-error" tabindex="-1">
-                <h3 class="message-title">${_("The following errors occurred while processing your voucher code:")} </h3>
-                <ul class="message-copy"></ul>
-            </div>
+                <div class="group group-form group-form-requiredinformation">
+                    <h2 class="sr">${_('Required Information')}</h2>
 
-            <div class="group group-form group-form-requiredinformation">
-                <h2 class="sr">${_('Required Information')}</h2>
+                    <ol class="list-input">
 
-                <ol class="list-input">
+                        <li class="field required text" id="field-name">
+                            <label for="name">${_('Code')}</label>
+                            <input id="name" type="text" name="name"
+                                   placeholder="${_('Voucher code for your course')}" required
+                                   aria-required="true" aria-describedby="name-tip"/>
+                            <span class="tip tip-input"
+                                  id="name-tip">${_("Needed for access to Labster courses")}</span>
+                        </li>
 
-                    <li class="field required text" id="field-name">
-                        <label for="name">${_('Code')}</label>
-                        <input id="name" type="text" name="name"
-                               placeholder="${_('Voucher code for your course')}" required
-                               aria-required="true" aria-describedby="name-tip"/>
-                        <span class="tip tip-input"
-                              id="name-tip">${_("Needed for access to Labster courses")}</span>
-                    </li>
+                    </ol>
+                </div>
 
-                </ol>
-            </div>
-
-            <div class="form-actions">
-                <button name="submit" type="submit" id="submit"
-                        class="action action-primary action-update register-button">${_('Submit')}</button>
-            </div>
-        </form>
+                <div class="form-actions">
+                    <button name="submit"
+                            type="submit"
+                            id="submit"
+                            class="action action-primary action-update register-button"
+                            >
+                        ${_('Submit')}
+                    </button>
+                </div>
+            </form>
+        </div>
     </section>
 </section>
