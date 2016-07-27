@@ -15,7 +15,7 @@ import calendar
 
 <%block name="pagetitle">${_("Enter voucher code")}</%block>
 
-<%block name="bodyclass">view-register</%block>
+<%block name="bodyclass">view-register-voucher</%block>
 
 <%block name="js_extra">
   <script type="text/javascript">
@@ -29,7 +29,7 @@ import calendar
   <header>
     <h1 class="title">
       <span class="title-super">${_("Welcome!")}</span>
-      <span class="title-sub">${_("Enter your voucher code below to create your access to Labster simulations").format(platform_name=platform_name)}</span>
+      <span class="title-sub">${_("Enter your voucher code below to create your access to Labster simulations")}</span>
     </h1>
   </header>
 </section>
@@ -56,15 +56,15 @@ import calendar
 
           <li class="field required text" id="field-name">
             <label for="name">${_('Full Name')}</label>
-            <input id="name" type="text" name="name" value="${name}" placeholder="${_('example: Jane Doe')}" required aria-required="true" aria-describedby="name-tip" />
-            <span class="tip tip-input" id="name-tip">${_("Needed for any certificates you may earn")}</span>
+            <input id="name" type="text" name="name" placeholder="${_('Voucher code for your course')}" required aria-required="true" aria-describedby="name-tip" />
+            <span class="tip tip-input" id="name-tip">${_("Needed for automatically enroll you to related course")}</span>
           </li>
 
         </ol>
       </div>
 
       <div class="form-actions">
-        <button name="submit" type="submit" id="submit" class="action action-primary action-update register-button">${_('Register')} <span class="orn-plus">+</span> ${_('Create My Account')}</button>
+        <button name="submit" type="submit" id="submit" class="action action-primary action-update register-button">${_('Register')} <span class="orn-plus">+</span> ${_('Submit')}</button>
       </div>
     </form>
   </section>
