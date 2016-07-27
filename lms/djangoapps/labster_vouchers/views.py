@@ -9,5 +9,5 @@ def enter_voucher(request):
     """
     Display the Enter Voucher form for student.
     """
-    context = {}
+    context = {'user': request.user}
     return render_to_response('labster/enter_voucher.html', context)
