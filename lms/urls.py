@@ -722,6 +722,7 @@ urlpatterns += (
 
 urlpatterns += (
     url(r'^courses/{}/'.format(settings.COURSE_ID_PATTERN), include('labster_course_license.urls')),
+    url(r'^vouchers', include('labster_vouchers.urls')),
 )
 
 # XDomain proxy
