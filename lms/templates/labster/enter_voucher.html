@@ -1,4 +1,4 @@
-<%inherit file="main.html" />
+<%inherit file="../main.html" />
 <%!
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
@@ -29,7 +29,7 @@ import calendar
   <header>
     <h1 class="title">
       <span class="title-super">${_("Welcome!")}</span>
-      <span class="title-sub">${_("Register below to create your {platform_name} account").format(platform_name=platform_name)}</span>
+      <span class="title-sub">${_("Enter your voucher code below to create your access to Labster simulations").format(platform_name=platform_name)}</span>
     </h1>
   </header>
 </section>
