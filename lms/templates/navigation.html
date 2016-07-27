@@ -69,7 +69,7 @@ site_status_msg = get_site_status_msg(course_id)
             <a href="${marketing_link('COURSES')}">${_('Browse Labs')}</a>
           </li>
         % endif
-        % if user.is_authenticated():
+        % if settings.FEATURES.get('ENABLE_VOUCHERS', True):
           <li class="nav-global-01">
             <a href="${reverse('enter_voucher')}">${_('Enter Voucher Code')}</a>
           </li>
