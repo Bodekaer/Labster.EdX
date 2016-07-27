@@ -1,16 +1,16 @@
 <%inherit file="../main.html" />
 <%!
-from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse
-from django.utils import html
-from django_countries import countries
-from django.utils.translation import ugettext as _
-from microsite_configuration import microsite
-from student.models import UserProfile
-from datetime import date
-import third_party_auth
-from third_party_auth import pipeline, provider
-import calendar
+    from django.utils.translation import ugettext as _
+    from django.core.urlresolvers import reverse
+    from django.utils import html
+    from django_countries import countries
+    from django.utils.translation import ugettext as _
+    from microsite_configuration import microsite
+    from student.models import UserProfile
+    from datetime import date
+    import third_party_auth
+    from third_party_auth import pipeline, provider
+    import calendar
 %>
 
 <%block name="pagetitle">${_("Enter voucher code")}</%block>
@@ -18,54 +18,60 @@ import calendar
 <%block name="bodyclass">view-register-voucher</%block>
 
 <%block name="js_extra">
-  <script type="text/javascript">
-    $(function() {
+    <script type="text/javascript">
+        $(function () {
 
-    });
-  </script>
+        });
+    </script>
 </%block>
 
-<section class="introduction">
-  <header>
-    <h1 class="title">
-      <span class="title-super">${_("Welcome!")}</span>
-      <span class="title-sub">${_("Enter your voucher code below to create your access to Labster simulations")}</span>
-    </h1>
-  </header>
-</section>
-
 <section class="register container">
-  <section role="main" class="content">
-    <form role="form" id="register-form" method="post" data-remote="true" action="/create_account" novalidate>
-      <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+    <section role="main" class="content">
+        <form role="form"
+              id="voucher-register-form"
+              class="login-register"
+              method="post"
+              data-remote="true"
+              action="/activate_voucher"
+              novalidate>
+            <div class="section-title lines">
+                <h2>
+                    <span class="text">${_('Enter Voucher')}</span>
+                </h2>
+            </div>
+            <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
 
-      <!-- status messages -->
-      <div role="alert" class="status message">
-        <h3 class="message-title">${_("We're sorry, but this version of your browser is not supported. Try again using a different browser or a newer version of your browser.")}</h3>
-      </div>
+            <!-- status messages -->
+            <div role="alert" class="status message">
+                <h3 class="message-title">${_("We're sorry, but this version of your browser is not supported. Try again using a different browser or a newer version of your browser.")}</h3>
+            </div>
 
-      <div role="alert" class="status message submission-error" tabindex="-1">
-        <h3 class="message-title">${_("The following errors occurred while processing your registration:")} </h3>
-        <ul class="message-copy"> </ul>
-      </div>
+            <div role="alert" class="status message submission-error" tabindex="-1">
+                <h3 class="message-title">${_("The following errors occurred while processing your voucher code:")} </h3>
+                <ul class="message-copy"></ul>
+            </div>
 
-      <div class="group group-form group-form-requiredinformation">
-        <h2 class="sr">${_('Required Information')}</h2>
+            <div class="group group-form group-form-requiredinformation">
+                <h2 class="sr">${_('Required Information')}</h2>
 
-        <ol class="list-input">
+                <ol class="list-input">
 
-          <li class="field required text" id="field-name">
-            <label for="name">${_('Full Name')}</label>
-            <input id="name" type="text" name="name" placeholder="${_('Voucher code for your course')}" required aria-required="true" aria-describedby="name-tip" />
-            <span class="tip tip-input" id="name-tip">${_("Needed for automatically enroll you to related course")}</span>
-          </li>
+                    <li class="field required text" id="field-name">
+                        <label for="name">${_('Code')}</label>
+                        <input id="name" type="text" name="name"
+                               placeholder="${_('Voucher code for your course')}" required
+                               aria-required="true" aria-describedby="name-tip"/>
+                        <span class="tip tip-input"
+                              id="name-tip">${_("Needed for access to Labster courses")}</span>
+                    </li>
 
-        </ol>
-      </div>
+                </ol>
+            </div>
 
-      <div class="form-actions">
-        <button name="submit" type="submit" id="submit" class="action action-primary action-update register-button">${_('Register')} <span class="orn-plus">+</span> ${_('Submit')}</button>
-      </div>
-    </form>
-  </section>
+            <div class="form-actions">
+                <button name="submit" type="submit" id="submit"
+                        class="action action-primary action-update register-button">${_('Submit')}</button>
+            </div>
+        </form>
+    </section>
 </section>
