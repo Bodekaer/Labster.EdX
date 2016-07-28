@@ -9,6 +9,7 @@ FEATURES['CUSTOM_COURSES_EDX'] = True
 FEATURES['SHOW_LABSTER_NOTIFICATION'] = False
 LABSTER_FEATURES = {
     "ENABLE_WIKI": True,
+    "ENABLE_VOUCHERS": False,
 }
 
 
@@ -18,6 +19,7 @@ for feature, value in ENV_LABSTER_FEATURES.items():
 
 INSTALLED_APPS += (
     'labster_course_license',
+    'labster_vouchers',
 )
 
 LABSTER_WIKI_LINK = LABSTER_SETTINGS.get('LABSTER_WIKI_LINK', 'https://theory.labster.com/')
@@ -39,3 +41,6 @@ LABSTER_DEFAULT_LTI_ID = LABSTER_SETTINGS.get('LABSTER_DEFAULT_LTI_ID', 'MC')
 RAVEN_CONFIG = AUTH_TOKENS.get('RAVEN_CONFIG', {})
 if RAVEN_CONFIG.get('dsn'):
     INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
+
+# Enable voucher system
+LABSTER_ENABLE_VOUCHERS = LABSTER_SETTINGS.get('ENABLE_VOUCHERS', LABSTER_FEATURES["ENABLE_VOUCHERS"])
