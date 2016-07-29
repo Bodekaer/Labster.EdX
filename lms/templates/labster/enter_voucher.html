@@ -34,7 +34,7 @@
                       class="login-register register-form"
                       method="post"
                       data-remote="true"
-                      action="/vouchers/activate"
+                      action="/vouchers/activate/"
                       novalidate>
                     <div class="section-title lines">
                         <h2>
@@ -50,18 +50,17 @@
                     </div>
 
                     <div class="group group-form group-form-requiredinformation">
-                        <h2 class="sr">${_('Required Information')}</h2>
-
                         <ol class="list-input">
 
                             <li class="field required text" id="field-name">
-                                <label for="name">${_('Code')}</label>
-                                <input id="name" type="text" name="name"
+                                <label for="code">${_('Code')}</label>
+                                <input id="code" type="text" name="code"
                                        placeholder="${_('Please enter purchased voucher code')}"
                                        required
-                                       aria-required="true" aria-describedby="name-tip"/>
-                            <span class="tip tip-input"
-                                  id="name-tip">${_("Needed for access to Labster courses")}</span>
+                                       aria-required="true" aria-describedby="code-tip"/>
+                                <span class="tip tip-input" id="code-tip">
+                                    ${_("Needed for access to Labster courses")}
+                                </span>
                             </li>
 
                         </ol>
