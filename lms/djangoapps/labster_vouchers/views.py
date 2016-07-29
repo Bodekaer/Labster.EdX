@@ -62,8 +62,11 @@ def activate_voucher(request):
         try:
             lic = CourseLicense.objects.get(license_code=response_data.get('license'))
         except CourseLicense.DoesNotExist:
-            log.exception("Voucher related license is not found")
-            messages.error(request, _("Voucher code is not valid. Please contact Labster support team."))
+            log.exception("Voucher related license is not found. Code: {}".format(code))
+            messages.error(
+                request,
+                _("Voucher code `{}` is not valid. Please contact Labster support team.").format(code)
+            )
             return redirect(enter_voucher_url)
 
         course_id = unicode(lic.course_id)
