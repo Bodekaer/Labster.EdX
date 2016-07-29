@@ -73,5 +73,5 @@ def activate_voucher(request):
         # enroll student to course
         add_enrollment(request.user, course_id)
         # redirect student to course
-        redirect(reverse('info', args=[course_id]))
+        return redirect(reverse('info', args=[course_id]))
 
