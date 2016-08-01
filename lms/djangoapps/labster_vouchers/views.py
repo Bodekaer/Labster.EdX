@@ -22,10 +22,25 @@ from enrollment.errors import (
     CourseModeNotFoundError, CourseEnrollmentExistsError
 )
 from labster_course_license.models import CourseLicense
-from labster_vouchers import forms
+from labster_vouchers import forms, tasks
+from student.models import anonymous_id_for_user
 
 
 log = logging.getLogger(__name__)
+
+
+class ItemNotFoundError(Exception):
+    """
+    This exception is raised in the case where items is not found in Labster API.
+    """
+    pass
+
+
+class LabsterApiError(Exception):
+    """
+    This exception is raised in the case where problems with Labster API appear.
+    """
+    pass
 
 
 @require_http_methods(["GET"])
@@ -54,7 +69,67 @@ def activate_voucher(request):
         return redirect(enter_voucher_url)
 
     code = form.cleaned_data['code']
-    url = settings.LABSTER_ENDPOINTS.get('voucher_license').format(code=code)
+
+    try:
+        license_code = get_license(code)
+    except ItemNotFoundError:
+        messages.error(request, _(
+            "Cannot find a voucher '{}'. Please contact Labster support team."
+        ).format(code))
+        return redirect(enter_voucher_url)
+    except LabsterApiError:
+        messages.error(request, _(
+            "There are some issues with applying your voucher. Please try again in a few minutes."
+        ))
+        return redirect(enter_voucher_url)
+
+    course_license = CourseLicense.objects.filter(license_code=license_code).first()
+
+    if not course_license:
+        messages.error(
+            request,
+            _("Cannot find a course for the voucher '{}'. Please contact Labster support team.").format(code)
+        )
+        return redirect(enter_voucher_url)
+
+    course_id = course_license.course_id
+    try:
+        # enroll student to course
+        add_enrollment(request.user, unicode(course_id))
+    except CourseNotFoundError:
+        messages.error(
+            request,
+            _(u"No course '{course_id}' found for enrollment").format(course_id=course_id)
+        )
+        return redirect(enter_voucher_url)
+    except CourseEnrollmentExistsError:
+        messages.error(
+            request,
+            _(u"You have been already enrolled to the course '{course_id}' before.").format(course_id=course_id)
+        )
+        return redirect(enter_voucher_url)
+    except CourseEnrollmentError:
+        messages.error(
+            request,
+            _(
+                u"An error occurred while creating the new course enrollment for user "
+                u"'{username}' in course '{course_id}'"
+            ).format(username=request.user.username, course_id=course_id)
+        )
+        return redirect(enter_voucher_url)
+
+    anon_uid = anonymous_id_for_user(request.user, course_id)
+    context_id = course_id.to_deprecated_string()
+    tasks.activate_voucher.delay(code, anon_uid, request.user.email, context_id)
+
+    return redirect(reverse('dashboard'))
+
+
+def get_license(voucher):
+    """
+    Returns a license for the given voucher code.
+    """
+    url = settings.LABSTER_ENDPOINTS.get('voucher_license').format(code=voucher)
 
     # Send voucher code to API and get license back
     headers = {
@@ -66,57 +141,13 @@ def activate_voucher(request):
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        license_code = response.json()['license']
-    except (RequestException, KeyError, ValueError) as ex:
+        return response.json()['license']
+    except RequestException as ex:
         if getattr(response, 'status_code', None) == 404:
-            messages.error(request, _(
-                "Cannot find a voucher '{}'. Please contact Labster support team."
-            ).format(code))
-            redirect(enter_voucher_url)
+            raise ItemNotFoundError
         else:
             log.exception("Labster API is unavailable:\n%r", ex)
-            messages.error(request, _(
-                "There are some issues with applying your voucher. Please try again in a few minutes."
-            ))
-            redirect(enter_voucher_url)
-
-    course_licenses = CourseLicense.objects.filter(license_code=license_code)
-
-    if not course_licenses:
-        messages.error(
-            request,
-            _(
-                "Cannot find a course for the voucher '{}'."
-                "Please contact Labster support team."
-            ).format(code)
-        )
-        redirect(enter_voucher_url)
-
-    for course_license in course_licenses:
-        course_id = unicode(course_license.course_id)
-        try:
-            # enroll student to course
-            add_enrollment(request.user, course_id)
-        except CourseNotFoundError:
-            messages.error(
-                request,
-                _(u"No course '{course_id}' found for enrollment").format(course_id=course_id)
-            )
-            return redirect(enter_voucher_url)
-        except CourseEnrollmentExistsError:
-            messages.error(
-                request,
-                _(u"You have been already enrolled to the course '{course_id}'.").format(course_id=course_id)
-            )
-            return redirect(enter_voucher_url)
-        except CourseEnrollmentError:
-            messages.error(
-                request,
-                _(
-                    u"An error occurred while creating the new course enrollment for user "
-                    u"'{username}' in course '{course_id}'"
-                ).format(username=request.user.username, course_id=course_id)
-            )
-            return redirect(enter_voucher_url)
-
-    return redirect(reverse('dashboard'))
+            raise LabsterApiError(_("Labster API is unavailable."))
+    except (KeyError, ValueError) as ex:
+        log.error("Invalid JSON:\n%r", ex)
+        raise LabsterApiError(_("Invalid JSON."))

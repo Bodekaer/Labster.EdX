@@ -30,6 +30,7 @@ LABSTER_ENDPOINTS = {
     'available_simulations': '',
     'consumer_secret': '',
     'voucher_license': '',
+    'voucher_activate': '',
 }
 
 ENV_LABSTER_ENDPOINTS = LABSTER_SETTINGS.get('LABSTER_ENDPOINTS', LABSTER_ENDPOINTS)
