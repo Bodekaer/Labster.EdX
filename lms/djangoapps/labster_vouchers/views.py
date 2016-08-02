@@ -18,8 +18,7 @@ from django.views.decorators.http import require_http_methods
 from edxmako.shortcuts import render_to_response
 from enrollment.api import add_enrollment
 from enrollment.errors import (
-    CourseNotFoundError, CourseEnrollmentError,
-    CourseModeNotFoundError, CourseEnrollmentExistsError
+    CourseNotFoundError, CourseEnrollmentError, CourseEnrollmentExistsError
 )
 from labster_course_license.models import CourseLicense
 from labster_vouchers import forms, tasks
@@ -83,15 +82,16 @@ def activate_voucher(request):
         ))
         return redirect(enter_voucher_url)
 
-    course_license = CourseLicense.objects.filter(license_code=license_code).first()
+    course_licenses = CourseLicense.objects.filter(license_code=license_code)
 
-    if not course_license:
+    if not course_licenses:
         messages.error(
             request,
             _("Cannot find a course for the voucher '{}'. Please contact Labster support team.").format(code)
         )
         return redirect(enter_voucher_url)
 
+    course_license = course_licenses[0]
     course_id = course_license.course_id
     try:
         # enroll student to course
