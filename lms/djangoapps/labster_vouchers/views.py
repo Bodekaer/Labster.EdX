@@ -129,7 +129,7 @@ def get_license(voucher):
     """
     Returns a license for the given voucher code.
     """
-    url = settings.LABSTER_ENDPOINTS.get('voucher_license').format(code=voucher)
+    url = settings.LABSTER_ENDPOINTS.get('voucher_license').format(voucher)
 
     # Send voucher code to API and get license back
     headers = {

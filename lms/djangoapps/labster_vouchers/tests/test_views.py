@@ -47,7 +47,7 @@ class TestActivateVouchers(CCXCourseTestBase):
         voucher = "A" * 10
         httpretty.register_uri(
             httpretty.GET,
-            settings.LABSTER_ENDPOINTS.get('voucher_license').format(code=voucher),
+            settings.LABSTER_ENDPOINTS.get('voucher_license').format(voucher),
             status=status.HTTP_404_NOT_FOUND,
         )
 
@@ -63,7 +63,7 @@ class TestActivateVouchers(CCXCourseTestBase):
         voucher = "A" * 10
         httpretty.register_uri(
             httpretty.GET,
-            settings.LABSTER_ENDPOINTS.get('voucher_license').format(code=voucher),
+            settings.LABSTER_ENDPOINTS.get('voucher_license').format(voucher),
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -79,7 +79,7 @@ class TestActivateVouchers(CCXCourseTestBase):
         voucher = "A" * 10
         httpretty.register_uri(
             httpretty.GET,
-            settings.LABSTER_ENDPOINTS.get('voucher_license').format(code=voucher),
+            settings.LABSTER_ENDPOINTS.get('voucher_license').format(voucher),
             status=status.HTTP_200_OK,
             body=json.dumps({"license": "TestLicense"})
         )
@@ -105,7 +105,7 @@ class TestActivateVouchers(CCXCourseTestBase):
         voucher = "A" * 10
         httpretty.register_uri(
             httpretty.GET,
-            settings.LABSTER_ENDPOINTS.get('voucher_license').format(code=voucher),
+            settings.LABSTER_ENDPOINTS.get('voucher_license').format(voucher),
             status=status.HTTP_200_OK,
             body=json.dumps({"license": course_lic.license_code})
         )
@@ -124,7 +124,7 @@ class TestActivateVouchers(CCXCourseTestBase):
         voucher = "A" * 10
         httpretty.register_uri(
             httpretty.GET,
-            settings.LABSTER_ENDPOINTS.get('voucher_license').format(code=voucher),
+            settings.LABSTER_ENDPOINTS.get('voucher_license').format(voucher),
             status=status.HTTP_200_OK,
             body=json.dumps({"license": course_lic.license_code})
         )
