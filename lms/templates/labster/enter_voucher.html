@@ -28,7 +28,7 @@
         <div class="section-title lines">
           <h2><span class="text">${_('Enter Voucher')}</span></h2>
         </div>
-        {% csrf_token %}>
+        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}"/>
         <!-- status messages -->
         % if messages:
         <div role="alert" class="status message submission-error is-shown" tabindex="-1">
