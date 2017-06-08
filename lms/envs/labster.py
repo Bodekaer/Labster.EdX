@@ -1,4 +1,4 @@
-from .devstack import *  # pylint: disable=wildcard-import, unused-wildcard-import
+from .aws import *  # pylint: disable=wildcard-import, unused-wildcard-import
 import urlparse
 
 
