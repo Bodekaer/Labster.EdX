@@ -1,4 +1,4 @@
-from .aws import *  # pylint: disable=wildcard-import, unused-wildcard-import
+from .devstack import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
 
 LABSTER_SETTINGS = ENV_TOKENS.get('LABSTER_SETTINGS', {})
