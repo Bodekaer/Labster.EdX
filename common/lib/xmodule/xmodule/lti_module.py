@@ -393,10 +393,10 @@ class LTIModule(LTIFields, LTI20ModuleMixin, XModule):
                 param_name = 'custom_' + param_name
 
             custom_parameters[unicode(param_name)] = unicode(param_value)
-
+        # Start Changes by Labster: To simplify license applying UX
         if license and 'custom_license' not in custom_parameters:
             custom_parameters[u'custom_license'] = unicode(license)
-
+        # End Changes by Labster: To simplify license applying UX
         return self.oauth_params(
             custom_parameters,
             client_key,
@@ -883,12 +883,14 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
         course = self.get_course()
         for lti_passport in course.lti_passports:
             try:
+                # Start Changes by Labster: To simplify license applying UX
                 values = [i.strip() for i in lti_passport.split(':')]
                 if len(values) === 4:  # new Labster passport LTI format
                     lti_id, key, secret, license = values
                 else:
                     lti_id, key, secret = values
                     license = None
+                # End Changes by Labster: To simplify license applying UX
             except ValueError:
                 _ = self.runtime.service(self, "i18n").ugettext
                 msg = _('Could not parse LTI passport: {lti_passport}. Should be "id:key:secret" string.').format(
@@ -898,7 +900,7 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
 
             if lti_id == self.lti_id.strip():
                 return key, secret, license
-        return '', ''
+        return '', '', ''
 
     def is_past_due(self):
         """
