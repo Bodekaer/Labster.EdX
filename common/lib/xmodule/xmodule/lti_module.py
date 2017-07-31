@@ -885,7 +885,7 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
             try:
                 # Start Changes by Labster: To simplify license applying UX
                 values = [i.strip() for i in lti_passport.split(':')]
-                if len(values) === 4:  # new Labster passport LTI format
+                if len(values) == 4:  # new Labster passport LTI format
                     lti_id, key, secret, license = values
                 else:
                     lti_id, key, secret = values
