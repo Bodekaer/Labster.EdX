@@ -104,7 +104,7 @@ def activate_voucher(request):
         return redirect(enter_voucher_url)
     except LabsterApiError:
         messages.error(request, _(
-            "There are some issues with applying your acess code. Please try again in a few minutes."
+            "There are some issues with applying your access code. Please try again in a few minutes."
         ))
         return redirect(enter_voucher_url)
 
