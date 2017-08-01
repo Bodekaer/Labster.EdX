@@ -2,6 +2,7 @@
 <%!
     from django.utils.translation import ugettext as _
     from django.core.urlresolvers import reverse
+    from django.conf import settings
 %>
 
 <%block name="pagetitle">${_("Enter access code")}</%block>
@@ -57,7 +58,14 @@
                 placeholder="${_('Please enter your Voucher Code or Course Code')}"
                 required
                 aria-required="true" aria-describedby="code-tip"/>
-              <span class="tip tip-input" id="code-tip">${_("In case you have any questions please write us at support@labster.com")}</span>
+              <span class="tip tip-input" id="code-tip">
+                  ${_("In case you have any questions please write us at ")}
+                  % if settings.SUPPORT_EMAIL:
+                    ${settings.SUPPORT_EMAIL}
+                  % else:
+                    support@labster.com
+                  % endif
+              </span>
             </li>
           </ol>
         </div>
