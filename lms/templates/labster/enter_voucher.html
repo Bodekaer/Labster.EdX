@@ -59,12 +59,7 @@
                 required
                 aria-required="true" aria-describedby="code-tip"/>
               <span class="tip tip-input" id="code-tip">
-                  ${_("In case you have any questions please write us at ")}
-                  % if settings.SUPPORT_EMAIL:
-                    ${settings.SUPPORT_EMAIL}
-                  % else:
-                    support@labster.com
-                  % endif
+                  ${_("In case you have any questions please write us at {{support_email}}}").format(support_email=settings.CONTACT_EMAIL)}
               </span>
             </li>
           </ol>
