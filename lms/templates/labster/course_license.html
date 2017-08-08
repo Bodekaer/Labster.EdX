@@ -67,18 +67,18 @@ from django.core.urlresolvers import reverse
         </p>
       %else:
         <% license_code = license.license_code if license else '' %>
-        <% consumer_key = consumer_key or '' %>
-        <% secret_key = secret_key or '' %>
+        <% consumer_key_value = consumer_key or '' %>
+        <% secret_key_value = secret_key or '' %>
         <form action="${labster_license_url}" method="POST">
           <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}"/>
           <p>
             <label for="labster-consumer">${_("Consumer key:")}</label>
-            <input type="text" id="labster-consumer" name="consumer_key" value="${consumer_key}"
+            <input type="text" id="labster-consumer" name="consumer_key" value="${consumer_key_value}"
               placeholder="${_('Enter your Consumer Key')}" style="width:50%" required />
           </p>
           <p>
             <label for="labster-secret">${_("Secret key:")}</label>
-            <input type="text" id="labster-secret" name="secret_key" value="${secret_key}"
+            <input type="text" id="labster-secret" name="secret_key" value="${secret_key_value}"
               placeholder="${_('Enter your Secret Key')}" style="width:50%" required />
           </p>
           <p>
