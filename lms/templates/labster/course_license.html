@@ -71,17 +71,17 @@ from django.core.urlresolvers import reverse
           <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}"/>
           <p>
             <label for="labster-consumer">${_("Consumer key:")}</label>
-            <input type="text" id="labster-consumer" name="consumer_key" value="${consumer_key}"
+            <input type="text" id="labster-consumer" name="consumer_key" value="${consumer_key|default:''}"
               placeholder="${_('Enter your Consumer Key')}" style="width:50%" required />
           </p>
           <p>
             <label for="labster-secret">${_("Secret key:")}</label>
-            <input type="text" id="labster-secret" name="secret_key" value="${secret_key}"
+            <input type="text" id="labster-secret" name="secret_key" value="${secret_key|default:''}"
               placeholder="${_('Enter your Secret Key')}" style="width:50%" required />
           </p>
           <p>
             <label for="labster-license">${_("License:")}</label>
-            <input type="text" id="labster-license" name="license" value="${license_code}"
+            <input type="text" id="labster-license" name="license" value="${license_code|default:''}"
               placeholder="${_('Enter your license')}" style="width:50%" required />
           </p>
           <p><button type="submit">${_("Apply")}</button></p>
