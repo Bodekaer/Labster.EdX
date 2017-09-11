@@ -2,6 +2,9 @@ from .aws import *  # pylint: disable=wildcard-import, unused-wildcard-import
 import urlparse
 
 
+# Regions of Labster
+REGIONS = ENV_TOKENS.get('LABSTER_REGIONS', {})
+
 LABSTER_SETTINGS = ENV_TOKENS.get('LABSTER_SETTINGS', {})
 LABSTER_AUTH = AUTH_TOKENS.get('LABSTER_AUTH', {})
 
