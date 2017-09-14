@@ -1236,9 +1236,28 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
                 AUDIT_LOG.warning(u"Login failed - password for user.id: {0} is invalid".format(loggable_id))
             else:
                 AUDIT_LOG.warning(u"Login failed - password for {0} is invalid".format(email))
+
+        # Labster changes
+        # If there was login error, suggest student to login to region server
+        regions = configuration_helpers.get_value('REGIONS', settings.REGIONS)
+        # List of country codes: https://dev.maxmind.com/geoip/legacy/codes/iso3166/
+        current_region = request.session.get('country_code')
+        if current_region in regions.keys():
+            region_info = regions[current_region]
+            msg = _(
+                'If you are a student in {region_name}, your university may now be using the {region_code} version of '
+                'Labster. Please try to log in <a href="{region_login_url}">{region_name}</a> region'
+            ).format(
+                region_name=region_info['name'],
+                region_code=current_region.upper(),
+                region_login_url=region_info['login_url'],
+            )
+        else:
+            msg = _('Email or password is incorrect.')
+
         return JsonResponse({
             "success": False,
-            "value": _('Email or password is incorrect.'),
+            "value": msg,
         })  # TODO: this should be status code 400  # pylint: disable=fixme
 
     # successful login, clear failed login attempts counters, if applicable
