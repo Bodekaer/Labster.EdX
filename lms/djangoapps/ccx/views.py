@@ -66,6 +66,9 @@ from lms.djangoapps.ccx.utils import (
     prep_course_for_grading,
 )
 
+from labster_course_license.licensed_blocks_override import is_visible_to_staff_only
+
+
 log = logging.getLogger(__name__)
 TODAY = datetime.datetime.today  # for patching in tests
 
@@ -391,9 +394,16 @@ def get_ccx_schedule(course, ccx):
             if child.visible_to_staff_only:
                 continue
 
-            hidden = get_override_for_ccx(
-                ccx, child, 'visible_to_staff_only',
-                child.visible_to_staff_only)
+            # Start: Added by Labster
+            # Displays the simulations that are included in the license
+            # Check simulation visibility of staff
+            is_staff_only = is_visible_to_staff_only(ccx, child, child.visible_to_staff_only)
+            if is_staff_only:
+                continue
+
+            # Gets the value of the overridden field
+            hidden = get_override_for_ccx(ccx, child, 'visible_to_staff_only', is_staff_only)
+            # End: Added by Labster
 
             start = get_date(ccx, child, 'start')
             if depth > 1:
