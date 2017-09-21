@@ -1246,10 +1246,10 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
             region_info = regions[current_region]
             msg = _(
                 'If you are a student in {region_name}, your university may now be using the {region_code} version of '
-                'Labster. Please try to log in <a href="{region_login_url}">{region_name}</a> region'
+                'Labster. Please try to log into <a href="{region_login_url}">{region_name}</a> region.'
             ).format(
                 region_name=region_info['name'],
-                region_code=current_region.upper(),
+                region_code=region_info['region_code'],
                 region_login_url=region_info['login_url'],
             )
         else:
