@@ -113,7 +113,7 @@ def activate_voucher(voucher, user_id, email, context_id):
 @require_http_methods(["POST"])
 @ensure_csrf_cookie
 @login_required
-def activate_voucher(request):
+def activate_voucher_view(request):
     """
     Gets license code from API, fetches related course_id and enrolls student.
     """
