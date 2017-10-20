@@ -34,7 +34,6 @@ LABSTER_API_URL = LABSTER_SETTINGS.get('LABSTER_API_URL', '')
 LABSTER_ENDPOINTS = {
     'available_simulations': '',
     'license_validate': '',
-    'voucher_license': '',
     'voucher_activate': '',
 }
 

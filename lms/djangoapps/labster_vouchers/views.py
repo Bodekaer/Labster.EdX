@@ -23,7 +23,7 @@ from enrollment.errors import (
     CourseEnrollmentError, CourseEnrollmentExistsError
 )
 from labster_course_license.models import CourseLicense
-from labster_vouchers import forms, tasks
+from labster_vouchers import forms
 from student.models import anonymous_id_for_user
 from xmodule.modulestore.django import modulestore
 
@@ -66,6 +66,50 @@ def enter_voucher(request):
     return render_to_response('labster/enter_voucher.html', context)
 
 
+def activate_voucher(voucher, user_id, email, context_id):
+    """
+    Activates the voucher.
+    """
+    url = settings.LABSTER_ENDPOINTS.get('voucher_activate')
+    headers = {
+        "authorization": 'Token {}'.format(settings.LABSTER_API_AUTH_TOKEN),
+        "accept": 'application/json',
+    }
+
+    data = {
+        'user_id': user_id,
+        'email': email,
+        'context_id': context_id,
+        'voucher': voucher,
+    }
+
+    response = None
+    try:
+        response = requests.post(url, headers=headers, data=data)
+        response.raise_for_status()
+    except RequestException as ex:
+        if getattr(response, 'status_code', None) == 404:
+            raise ItemNotFoundError
+        else:
+            msg = (
+                "Issues with access code activation: user_id='%s', email='%s', "
+                "context_id='%s', voucher='%s',\nerror:\n%r"
+            )
+            log.exception(msg, user_id, email, context_id, voucher, ex)
+            raise LabsterApiError(_("Labster API is unavailable."))
+
+    try:
+        content = response.json()
+    except (KeyError, ValueError) as ex:
+        log.error("Invalid JSON:\n%r", ex)
+        raise LabsterApiError(_("Invalid JSON."))
+
+    if 'error' in content:
+        raise VoucherError(content['error'])
+
+    return content['license']
+
+
 @require_http_methods(["POST"])
 @ensure_csrf_cookie
 @login_required
@@ -91,9 +135,11 @@ def activate_voucher(request):
         return redirect(enter_voucher_url)
 
     code = form.cleaned_data['code']
+    anon_uid = anonymous_id_for_user(request.user, course_id)
+    context_id = course_id.to_deprecated_string()
 
     try:
-        license_code = get_license(code)
+        license_code = activate_voucher(code, anon_uid, request.user.email, context_id)
     except VoucherError as ex:
         messages.error(request, unicode(ex))
         return redirect(enter_voucher_url)
@@ -137,42 +183,4 @@ def activate_voucher(request):
             ).format(username=request.user.username)
         )
         return redirect(enter_voucher_url)
-
-    anon_uid = anonymous_id_for_user(request.user, course_id)
-    context_id = course_id.to_deprecated_string()
-    tasks.activate_voucher.delay(code, anon_uid, request.user.email, context_id)
-
     return redirect(reverse('info', args=[unicode(course_id)]))
-
-
-def get_license(access_code):
-    """
-    Returns a license for the given access code.
-    """
-    url = settings.LABSTER_ENDPOINTS.get('voucher_license').format(access_code)
-
-    # Send voucher code to API and get license back
-    headers = {
-        "authorization": 'Token {}'.format(settings.LABSTER_API_AUTH_TOKEN),
-        "accept": 'application/json',
-    }
-    response = None
-
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        content = response.json()
-
-        if 'error' in content:
-            raise VoucherError(content['error'])
-
-        return content['license']
-    except RequestException as ex:
-        if getattr(response, 'status_code', None) == 404:
-            raise ItemNotFoundError
-        else:
-            log.exception("Labster API is unavailable:\n%r", ex)
-            raise LabsterApiError(_("Labster API is unavailable."))
-    except (KeyError, ValueError) as ex:
-        log.error("Invalid JSON:\n%r", ex)
-        raise LabsterApiError(_("Invalid JSON."))
