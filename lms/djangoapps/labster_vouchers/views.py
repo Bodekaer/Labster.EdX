@@ -66,7 +66,7 @@ def enter_voucher(request):
     return render_to_response('labster/enter_voucher.html', context)
 
 
-def activate_voucher(voucher, user_id, email, context_id):
+def activate_voucher(voucher, user_id, email):
     """
     Activates the voucher.
     """
@@ -79,7 +79,6 @@ def activate_voucher(voucher, user_id, email, context_id):
     data = {
         'user_id': user_id,
         'email': email,
-        'context_id': context_id,
         'voucher': voucher,
     }
 
@@ -134,12 +133,14 @@ def activate_voucher_view(request):
         messages.error(request, _("Please enter a valid access code."))
         return redirect(enter_voucher_url)
 
+
+    license_code = get_license(voucher)
+
+
     code = form.cleaned_data['code']
-    anon_uid = anonymous_id_for_user(request.user, course_id)
-    context_id = course_id.to_deprecated_string()
 
     try:
-        license_code = activate_voucher(code, anon_uid, request.user.email, context_id)
+        license_code = get_license(code)
     except VoucherError as ex:
         messages.error(request, unicode(ex))
         return redirect(enter_voucher_url)
@@ -165,6 +166,25 @@ def activate_voucher_view(request):
 
     course_license = course_licenses[0]
     course_id = course_license.course_id
+    anon_uid = anonymous_id_for_user(request.user, course_id)
+    context_id = course_id.to_deprecated_string()
+
+    try:
+        license_code = activate_voucher(code, anon_uid, request.user.email, context_id)
+    except VoucherError as ex:
+        messages.error(request, unicode(ex))
+        return redirect(enter_voucher_url)
+    except ItemNotFoundError:
+        messages.error(request, _(
+            "Cannot find an access code '{}'. Please contact Labster support team."
+        ).format(code))
+        return redirect(enter_voucher_url)
+    except LabsterApiError:
+        messages.error(request, _(
+            "There are some issues with applying your access code. Please try again in a few minutes."
+        ))
+        return redirect(enter_voucher_url)
+
     try:
         # enroll student to course
         add_enrollment(request.user, unicode(course_id))
@@ -184,3 +204,36 @@ def activate_voucher_view(request):
         )
         return redirect(enter_voucher_url)
     return redirect(reverse('info', args=[unicode(course_id)]))
+
+
+def get_license(access_code):
+    """
+    Returns a license for the given access code.
+    """
+    url = settings.LABSTER_ENDPOINTS.get('voucher_license').format(access_code)
+
+    # Send voucher code to API and get license back
+    headers = {
+        "authorization": 'Token {}'.format(settings.LABSTER_API_AUTH_TOKEN),
+        "accept": 'application/json',
+    }
+    response = None
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        content = response.json()
+
+        if 'error' in content:
+            raise VoucherError(content['error'])
+
+        return content['license']
+    except RequestException as ex:
+        if getattr(response, 'status_code', None) == 404:
+            raise ItemNotFoundError
+        else:
+            log.exception("Labster API is unavailable:\n%r", ex)
+            raise LabsterApiError(_("Labster API is unavailable."))
+    except (KeyError, ValueError) as ex:
+        log.error("Invalid JSON:\n%r", ex)
+        raise LabsterApiError(_("Invalid JSON."))

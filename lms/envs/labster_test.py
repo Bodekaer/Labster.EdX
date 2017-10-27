@@ -28,6 +28,7 @@ LABSTER_API_URL = ''
 LABSTER_ENDPOINTS = {
     'available_simulations': 'https://example.com/available_simulations',
     'license_validate': 'https://example.com/licenses/validate/',
+    'voucher_license': 'https://example.com/vouchers/{}/license/',
     'voucher_activate': 'https://example.com/voucher/activate/',
 }
 
