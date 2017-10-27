@@ -133,10 +133,6 @@ def activate_voucher_view(request):
         messages.error(request, _("Please enter a valid access code."))
         return redirect(enter_voucher_url)
 
-
-    license_code = get_license(voucher)
-
-
     code = form.cleaned_data['code']
 
     try:
