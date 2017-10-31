@@ -23,7 +23,7 @@ from enrollment.errors import (
     CourseEnrollmentError, CourseEnrollmentExistsError
 )
 from labster_course_license.models import CourseLicense
-from labster_vouchers import forms, tasks
+from labster_vouchers import forms
 from student.models import anonymous_id_for_user
 from xmodule.modulestore.django import modulestore
 
@@ -66,10 +66,43 @@ def enter_voucher(request):
     return render_to_response('labster/enter_voucher.html', context)
 
 
+def activate_voucher(voucher, user_id, email, context_id):
+    """
+    Activates the voucher.
+    """
+    url = settings.LABSTER_ENDPOINTS.get('voucher_activate')
+    headers = {
+        "authorization": 'Token {}'.format(settings.LABSTER_API_AUTH_TOKEN),
+        "accept": 'application/json',
+    }
+
+    data = {
+        'user_id': user_id,
+        'email': email,
+        'context_id': context_id,
+        'voucher': voucher,
+    }
+
+    response = None
+    try:
+        response = requests.post(url, headers=headers, data=data)
+        response.raise_for_status()
+    except RequestException as ex:
+        if getattr(response, 'status_code', None) == 404:
+            raise ItemNotFoundError
+        else:
+            msg = (
+                "Issues with access code activation: user_id='%s', email='%s', "
+                "context_id='%s', voucher='%s',\nerror:\n%r"
+            )
+            log.exception(msg, user_id, email, context_id, voucher, ex)
+            raise LabsterApiError(_("Labster API is unavailable."))
+
+
 @require_http_methods(["POST"])
 @ensure_csrf_cookie
 @login_required
-def activate_voucher(request):
+def activate_voucher_view(request):
     """
     Gets license code from API, fetches related course_id and enrolls student.
     """
@@ -119,6 +152,22 @@ def activate_voucher(request):
 
     course_license = course_licenses[0]
     course_id = course_license.course_id
+    anon_uid = anonymous_id_for_user(request.user, course_id)
+    context_id = course_id.to_deprecated_string()
+
+    try:
+        activate_voucher(code, anon_uid, request.user.email, context_id)
+    except ItemNotFoundError:
+        messages.error(request, _(
+            "Cannot find an access code '{}'. Please contact Labster support team."
+        ).format(code))
+        return redirect(enter_voucher_url)
+    except LabsterApiError:
+        messages.error(request, _(
+            "There are some issues with applying your access code. Please try again in a few minutes."
+        ))
+        return redirect(enter_voucher_url)
+
     try:
         # enroll student to course
         add_enrollment(request.user, unicode(course_id))
@@ -137,11 +186,6 @@ def activate_voucher(request):
             ).format(username=request.user.username)
         )
         return redirect(enter_voucher_url)
-
-    anon_uid = anonymous_id_for_user(request.user, course_id)
-    context_id = course_id.to_deprecated_string()
-    tasks.activate_voucher.delay(code, anon_uid, request.user.email, context_id)
-
     return redirect(reverse('info', args=[unicode(course_id)]))
 
 
