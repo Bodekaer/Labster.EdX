@@ -66,7 +66,7 @@ def enter_voucher(request):
     return render_to_response('labster/enter_voucher.html', context)
 
 
-def activate_voucher(voucher, user_id, email):
+def activate_voucher(voucher, user_id, email, context_id):
     """
     Activates the voucher.
     """
@@ -79,6 +79,7 @@ def activate_voucher(voucher, user_id, email):
     data = {
         'user_id': user_id,
         'email': email,
+        'context_id': context_id,
         'voucher': voucher,
     }
 
@@ -96,17 +97,6 @@ def activate_voucher(voucher, user_id, email):
             )
             log.exception(msg, user_id, email, context_id, voucher, ex)
             raise LabsterApiError(_("Labster API is unavailable."))
-
-    try:
-        content = response.json()
-    except (KeyError, ValueError) as ex:
-        log.error("Invalid JSON:\n%r", ex)
-        raise LabsterApiError(_("Invalid JSON."))
-
-    if 'error' in content:
-        raise VoucherError(content['error'])
-
-    return content['license']
 
 
 @require_http_methods(["POST"])
@@ -166,10 +156,7 @@ def activate_voucher_view(request):
     context_id = course_id.to_deprecated_string()
 
     try:
-        license_code = activate_voucher(code, anon_uid, request.user.email, context_id)
-    except VoucherError as ex:
-        messages.error(request, unicode(ex))
-        return redirect(enter_voucher_url)
+        activate_voucher(code, anon_uid, request.user.email, context_id)
     except ItemNotFoundError:
         messages.error(request, _(
             "Cannot find an access code '{}'. Please contact Labster support team."
