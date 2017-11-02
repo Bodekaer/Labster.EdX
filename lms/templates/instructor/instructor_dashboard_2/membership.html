@@ -11,6 +11,16 @@ from openedx.core.djangoapps.course_groups.partition_scheme import get_cohorted_
       <div class="title"> {{title}} </div>
     </div>
     <div class="info"> {{info}} </div>
+    ## Start changes by labster.
+    ## Add button to the top of the list.
+    <div class="bottom-bar">
+      <label>
+          <span class="label-text sr">{{add_placeholder}}</span>
+          <input type="text" id="add-field" name="add-field" class="add-field" placeholder="{{add_placeholder}}">
+      </label>
+      <input type="button" name="add" class="add" value="{{add_btn_label}}">
+    </div>
+    ## End changes by labster.
     <div class="member-list">
       <table>
         <thead>
