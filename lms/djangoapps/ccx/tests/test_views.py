@@ -802,6 +802,37 @@ class TestCoachDashboard(CcxTestCase, LoginEnrollmentTestCase):
             ).exists()
         )
 
+    @patch('ccx.views.render_to_response', intercept_renderer)
+    @ddt.data(
+        ('ccx_invite', 'student-ids', ('enrollment-button', 'Enroll'), 'nobody@nowhere.com'),
+        ('ccx_manage_student', 'student-id', ('student-action', 'add'), 'nobody2@nowhere.com'),
+    )
+    @ddt.unpack
+    def test_enrollment_status(self, view_name, student_form_input_name, button_tuple, identifier):
+        """
+        Get enrollment status in the list of management student on CCX coach dashboard.
+        """
+        self.make_coach()
+        ccx = self.make_ccx()
+        course_key = CCXLocator.from_course_locator(self.course.id, ccx.id)
+        ccx_coach_url = reverse('ccx_coach_dashboard', kwargs={'course_id': course_key})
+        url = reverse(
+            view_name,
+            kwargs={'course_id': course_key}
+        )
+
+        data = {
+            button_tuple[0]: button_tuple[1],
+            student_form_input_name: identifier,
+        }
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        # Make sure email of non student is included in ccx_enrolls.
+        response = self.client.get(ccx_coach_url)
+        student_pending = response.mako_context['ccx_enrolls']
+        self.assertEqual(student_pending[0].email, identifier)
+
 
 @attr('shard_1')
 class TestCoachDashboardSchedule(CcxTestCase, LoginEnrollmentTestCase, ModuleStoreTestCase):

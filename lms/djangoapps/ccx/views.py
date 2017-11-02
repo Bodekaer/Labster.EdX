@@ -36,7 +36,7 @@ from edxmako.shortcuts import render_to_response
 from opaque_keys.edx.keys import CourseKey
 from ccx_keys.locator import CCXLocator
 from student.roles import CourseCcxCoachRole
-from student.models import CourseEnrollment
+from student.models import CourseEnrollment, CourseEnrollmentAllowed
 
 from instructor.views.api import _split_input_list
 from instructor.views.gradebook_api import get_grade_book_page
@@ -162,9 +162,12 @@ def dashboard(request, course, ccx=None):
         is_staff = has_access(request.user, 'staff', course)
         is_instructor = has_access(request.user, 'instructor', course)
         ccx_members = CourseEnrollment.objects.filter(course_id=ccx_locator, is_active=True)
+        ccx_enrolls = CourseEnrollmentAllowed.may_enroll_and_unenrolled(ccx_locator)
         if not all([is_staff, is_instructor]):
-           ccx_members = ccx_members.exclude(user__courseaccessrole__role__in=('instructor', 'staff',))
+            ccx_members = ccx_members.exclude(user__courseaccessrole__role__in=('instructor', 'staff',))
+        # Students who are allowed to enroll in a course.
         context['ccx_members'] = ccx_members
+        context['ccx_enrolls'] = ccx_enrolls
         # End: Added by Labster
         context['gradebook_url'] = reverse(
             'ccx_gradebook', kwargs={'course_id': ccx_locator})
