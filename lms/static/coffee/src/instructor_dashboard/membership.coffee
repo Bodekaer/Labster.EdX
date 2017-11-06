@@ -29,8 +29,8 @@ class MemberListWidget
     @$container.html Mustache.render template_html, params
 
     # bind add button
-    @$('input[type="button"].add').click =>
-      params.add_handler? @$('.add-field').val()
+    @$('input[type="button"].add').click (event) =>
+      params.add_handler? @$(event.target).prev().children('.add-field').val()  # changed by labster
 
   # clear the input text field
   clear_input: -> @$('.add-field').val ''
