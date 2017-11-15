@@ -280,3 +280,51 @@ if os.path.isfile(join(dirname(abspath(__file__)), 'private.py')):
 MODULESTORE = convert_module_store_setting_if_needed(MODULESTORE)
 
 SECRET_KEY = '85920908f28904ed733fe576320db18cabd7b6cd'
+
+# Labster settings
+TECH_SUPPORT_EMAIL = 'support@labster.com'
+CONTACT_EMAIL = 'support@labster.com'
+BUGS_EMAIL = 'support@labster.com'
+DEFAULT_FROM_EMAIL ='support@labster.com'
+DEFAULT_FEEDBACK_EMAIL = 'support@labster.com'
+DEFAULT_SERVER_EMAIL = 'web-circle@labster.com'
+BULK_EMAIL_DEFAULT_FROM_EMAIL = 'no-reply@labster.com'
+UNIVERSITY_EMAIL = 'support@labster.com'
+PRESS_EMAIL = 'press@labster.com'
+
+COMPREHENSIVE_THEME_DIRS = ["/edx/app/edxapp/edx-platform/themes"]
+DEFAULT_SITE_THEME = "courses.labster.com"
+ENABLE_COMPREHENSIVE_THEMING = True
+
+LABSTER_FEATURES = {
+    "ENABLE_WIKI": False,
+    "ENABLE_VOUCHERS": True,
+}
+
+LABSTER_WIKI_LINK = 'https://staging4-theory.labster.com/'
+
+LABSTER_API_AUTH_TOKEN = ''
+
+LABSTER_API_URL = "https://staging4-region.labster.com/"
+LABSTER_ENDPOINTS = {
+    "available_simulations": "https://staging4-api.labster.com/api/licenses/available_simulations/",
+    "coaches": "https://staging4-region.labster.com/labster/api/coaches",
+    "license_validate": "https://staging4-region.labster.com/api/licenses/validate/",
+    "voucher_activate": "https://staging4-region.labster.com/vouchers/activate/",
+    "voucher_license": "https://staging4-region.labster.com/vouchers/{}/license/"
+
+FEATURES['ENABLE_COMBINED_LOGIN_REGISTRATION'] = True
+FEATURES['ENABLE_COURSEWARE_SEARCH'] = False
+FEATURES['ENABLE_DASHBOARD_SEARCH'] = True
+FEATURES['ENABLE_COURSE_DISCOVERY'] = False
+FEATURES['ENABLE_COURSEWARE_INDEX'] = True
+FEATURES['ENABLE_LIBRARY_INDEX'] = True
+FEATURES['ALLOW_ALL_ADVANCED_COMPONENTS'] = True
+FEATURES['ENABLE_SYSADMIN_DASHBOARD'] = True
+FEATURES['CUSTOM_COURSES_EDX'] = True
+FEATURES['USE_CUSTOM_THEME'] = False
+FEATURES['ENABLE_MKTG_SITE'] = True
+FEATURES['ENABLE_DISCUSSION_SERVICE'] = False
+FEATURES['ENABLE_CREATOR_GROUP'] = False
+FEATURES['DISABLE_COURSE_CREATION'] = True
+FEATURES['STUDIO_REQUEST_EMAIL'] = "support@labster.com"
