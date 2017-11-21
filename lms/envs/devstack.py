@@ -312,6 +312,7 @@ LABSTER_ENDPOINTS = {
     "license_validate": "https://staging4-region.labster.com/api/licenses/validate/",
     "voucher_activate": "https://staging4-region.labster.com/vouchers/activate/",
     "voucher_license": "https://staging4-region.labster.com/vouchers/{}/license/"
+}
 
 FEATURES['ENABLE_COMBINED_LOGIN_REGISTRATION'] = True
 FEATURES['ENABLE_COURSEWARE_SEARCH'] = False
