@@ -469,6 +469,7 @@ class CCXListView(GenericAPIView):
             start = TODAY().replace(tzinfo=pytz.UTC)
             override_field_for_ccx(ccx_course_object, master_course_object, 'start', start)
             override_field_for_ccx(ccx_course_object, master_course_object, 'due', None)
+            override_field_for_ccx(ccx, course, 'lti_passports', [])  # Changed by Labster
 
             # Enforce a static limit for the maximum amount of students that can be enrolled
             override_field_for_ccx(
@@ -479,13 +480,13 @@ class CCXListView(GenericAPIView):
             )
 
             # Hide anything that can show up in the schedule
-            hidden = 'visible_to_staff_only'
-            for chapter in master_course_object.get_children():
-                override_field_for_ccx(ccx_course_object, chapter, hidden, True)
-                for sequential in chapter.get_children():
-                    override_field_for_ccx(ccx_course_object, sequential, hidden, True)
-                    for vertical in sequential.get_children():
-                        override_field_for_ccx(ccx_course_object, vertical, hidden, True)
+            # hidden = 'visible_to_staff_only'
+            # for chapter in master_course_object.get_children():
+            #     override_field_for_ccx(ccx_course_object, chapter, hidden, True)
+            #     for sequential in chapter.get_children():
+            #         override_field_for_ccx(ccx_course_object, sequential, hidden, True)
+            #         for vertical in sequential.get_children():
+            #             override_field_for_ccx(ccx_course_object, vertical, hidden, True)
 
             # make the coach user a coach on the master course
             make_user_coach(coach, master_course_key)

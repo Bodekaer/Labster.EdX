@@ -250,7 +250,8 @@ def create_ccx(request, course, ccx=None):
     )
 
     assign_coach_role_to_ccx(ccx_id, request.user, course.id)
-    add_master_course_staff_to_ccx(course, ccx_id, ccx.display_name)
+    # The following line is changed by Labster to avoid spamming staff.
+    add_master_course_staff_to_ccx(course, ccx_id, ccx.display_name, send_email=False)
     return redirect(url)
 
 
