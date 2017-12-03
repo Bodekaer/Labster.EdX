@@ -91,7 +91,7 @@ class Command(BaseCommand):
         """
         Obfuscates objects name, email fields.
         """
-        fields_select = list(field_actions.keys())
+        fields_select = [n.split('.')[0] if '.' in n else n for n in field_actions.items()]
         for obj in query_set.only(*fields_select):
             print("Obfuscating data for %s" % obj)
             values = {}
