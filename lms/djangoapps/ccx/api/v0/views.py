@@ -469,8 +469,6 @@ class CCXListView(GenericAPIView):
             start = TODAY().replace(tzinfo=pytz.UTC)
             override_field_for_ccx(ccx_course_object, master_course_object, 'start', start)
             override_field_for_ccx(ccx_course_object, master_course_object, 'due', None)
-            # Changed by Labster
-            override_field_for_ccx(ccx_course_object, master_course_object, 'lti_passports', [])
 
             # Enforce a static limit for the maximum amount of students that can be enrolled
             override_field_for_ccx(
