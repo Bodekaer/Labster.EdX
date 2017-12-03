@@ -3,6 +3,7 @@ Management command to obfuscate users data by email or in course.
 """
 import string
 import random
+from itertools import chain
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 
@@ -58,7 +59,7 @@ class Command(BaseCommand):
                         'email', flat=True
                     )
 
-                    all_users = (not_enrolled_users | enrolled_users)
+                    all_users = chain(not_enrolled_users, enrolled_users)
 
                     user_emails |= set(all_users)
                 except CourseLicense.DoesNotExist:
