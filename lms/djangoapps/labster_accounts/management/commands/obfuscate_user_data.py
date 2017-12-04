@@ -14,14 +14,18 @@ from labster_course_license.models import CourseLicense
 
 def action_decorator(action, field_name):
     """
-    Decorator applies action to the provided value. Prints logs for better process transparency.
+    Decorator applies action to the provided value if value is not empty.
+    Prints logs for better process transparency.
     """
     def wrapper(val):
-        new_val = action(val)
-        print("Calling action `%s` for the parameter `%s` with value `%s`. Resulting value `%s`" % (
-            action, field_name, val, new_val
-        ))
-        return new_val
+        if val:
+            new_val = action(val)
+            print("Calling action `%s` for the attr `%s` with value `%s`. Resulting value `%s`" % (
+                action, field_name, val, new_val
+            ))
+            return new_val
+        else:
+            print("`%s` attr has empty value. Skip obfuscation" % field_name)
     return wrapper
 
 
