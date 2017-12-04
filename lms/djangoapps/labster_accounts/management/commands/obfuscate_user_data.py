@@ -91,22 +91,32 @@ class Command(BaseCommand):
         """
         Obfuscates objects name, email fields.
         """
-        fields_select = [n.split('.')[0] if '.' in n else n for n in field_actions.items()]
+        fields_select = set([key.split('.')[0] if '.' in key else key for key in field_actions.keys()])
         for obj in query_set.only(*fields_select):
             print("Obfuscating data for %s" % obj)
             values = {}
+            references = {}
             for field, action in field_actions.items():
-                val = getattr(obj, field, '')
                 if '.' in field:
                     # one2one relation or foreign key found
                     names = field.split('.')
                     # get relation field value
                     val = getattr(getattr(obj, names[0]), names[1], '')
-
-                values[field] = action(val)
+                    if not references[names[0]]:
+                        references[names[0]] = {}
+                    references[names[0]].update({names[1]: val})
+                else:
+                    val = getattr(obj, field, '')
+                    values[field] = action(val)
 
             if values:
                 obj.__class__.objects.filter(id=obj.id).update(**values)
+
+            if references:
+                for rel, item in references.items():
+                    _class = getattr(obj, rel).__class__
+                    _id = getattr(obj, rel).id
+                    _class.objects.filter(id=_id).update(**item)
 
     @staticmethod
     def generate_random_string(text):
@@ -120,5 +130,5 @@ class Command(BaseCommand):
         """
         Return random string of the same length as input value.
         """
-        obfuscated = self.generate_random_string(len(email))
+        obfuscated = self.generate_random_string(email)
         return ''.join([obfuscated[idx] if ch not in ['@', '.'] else ch for idx, ch in enumerate(email)])
