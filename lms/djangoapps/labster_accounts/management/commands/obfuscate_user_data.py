@@ -12,13 +12,15 @@ from student.models import CourseEnrollment, CourseEnrollmentAllowed
 from labster_course_license.models import CourseLicense
 
 
-def action_decorator(action):
+def action_decorator(action, field_name):
     """
     Decorator applies action to the provided value. Prints logs for better process transparency.
     """
     def wrapper(val):
         new_val = action(val)
-        print("Calling action `%s` with the parameter value `%s`. Resulting value `%s`" % (action, val, new_val))
+        print("Calling action `%s` for the parameter `%s` with value `%s`. Resulting value `%s`" % (
+            action, field_name, val, new_val
+        ))
         return new_val
     return wrapper
 
@@ -90,6 +92,7 @@ class Command(BaseCommand):
         field_actions = {
             'first_name': self.generate_random_string,
             'last_name': self.generate_random_string,
+            'username': self.generate_random_string,
             'profile.name': self.generate_random_string,
             'profile.mailing_address': self.generate_random_string,
             'email': self.obfuscate_email
@@ -100,7 +103,7 @@ class Command(BaseCommand):
     @staticmethod
     def obfuscate_names_emails(query_set, field_actions):
         """
-        Obfuscates objects name, email fields.
+        Obfuscates objects name, email and other fields.
         """
         fields_select = set([key.split('.')[0] if '.' in key else key for key in field_actions.keys()])
         for obj in query_set.only(*fields_select):
@@ -108,7 +111,7 @@ class Command(BaseCommand):
             values = {}
             references = {}
             for field, action in field_actions.items():
-                action = action_decorator(action)
+                action = action_decorator(action, field)
                 if '.' in field:
                     # one2one relation or foreign key found
                     names = field.split('.')
