@@ -102,7 +102,7 @@ class Command(BaseCommand):
                     names = field.split('.')
                     # get relation field value
                     val = getattr(getattr(obj, names[0]), names[1], '')
-                    if not references[names[0]]:
+                    if not (names[0] in references):
                         references[names[0]] = {}
                     references[names[0]].update({names[1]: val})
                 else:
