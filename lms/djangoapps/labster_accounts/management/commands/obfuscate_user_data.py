@@ -26,6 +26,7 @@ def action_decorator(action, field_name):
             return new_val
         else:
             print("`%s` attr has empty value. Skip obfuscation" % field_name)
+            return val
     return wrapper
 
 
