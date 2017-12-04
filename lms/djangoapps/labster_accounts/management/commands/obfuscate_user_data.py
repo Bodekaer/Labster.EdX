@@ -12,6 +12,17 @@ from student.models import CourseEnrollment, CourseEnrollmentAllowed
 from labster_course_license.models import CourseLicense
 
 
+def action_decorator(action):
+    """
+    Decorator applies action to the provided value. Prints logs for better process transparency.
+    """
+    def wrapper(val):
+        new_val = action(val)
+        print("Calling action `%s` with the parameter value `%s`. Resulting value `%s`" % (action, val, new_val))
+        return new_val
+    return wrapper
+
+
 class Command(BaseCommand):
     """
     Obfuscate user credentials by course license or by email.
@@ -97,6 +108,7 @@ class Command(BaseCommand):
             values = {}
             references = {}
             for field, action in field_actions.items():
+                action = action_decorator(action)
                 if '.' in field:
                     # one2one relation or foreign key found
                     names = field.split('.')
