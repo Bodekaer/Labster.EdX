@@ -104,7 +104,7 @@ class Command(BaseCommand):
                     val = getattr(getattr(obj, names[0]), names[1], '')
                     if not (names[0] in references):
                         references[names[0]] = {}
-                    references[names[0]].update({names[1]: val})
+                    references[names[0]].update({names[1]: action(val)})
                 else:
                     val = getattr(obj, field, '')
                     values[field] = action(val)
