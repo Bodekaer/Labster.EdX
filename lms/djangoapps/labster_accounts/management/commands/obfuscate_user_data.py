@@ -6,6 +6,7 @@ import random
 from itertools import chain
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from django.db import IntegrityError, transaction
 
 from student.models import CourseEnrollment, CourseEnrollmentAllowed
 
@@ -72,7 +73,7 @@ class Command(BaseCommand):
 
                     enrolled_users = CourseEnrollment.objects.filter(course_id=ccx).values_list(
                         'user__email', flat=True
-                    ).exclude(user__email__contains='labster.com')
+                    )
                     not_enrolled_users = CourseEnrollmentAllowed.may_enroll_and_unenrolled(ccx).values_list(
                         'email', flat=True
                     )
@@ -81,7 +82,7 @@ class Command(BaseCommand):
 
                     user_emails |= set(all_users)
                 except CourseLicense.DoesNotExist:
-                    pass
+                    print("CourseLicense with license code `%s` was not found" % lic)
 
         if emails:
             user_emails |= set(emails)
@@ -92,7 +93,7 @@ class Command(BaseCommand):
         """
         Obfuscates user model fields: names, email.
         """
-        users = User.objects.filter(email__in=user_emails)
+        users = User.objects.filter(email__in=user_emails).exclude(email__contains='labster.com')
 
         field_actions = {
             'first_name': self.generate_random_string,
@@ -129,14 +130,18 @@ class Command(BaseCommand):
                     val = getattr(obj, field, '')
                     values[field] = action(val)
 
-            if values:
-                obj.__class__.objects.filter(id=obj.id).update(**values)
+            try:
+                with transaction.atomic():
+                    if values:
+                        obj.__class__.objects.filter(id=obj.id).update(**values)
 
-            if references:
-                for rel, item in references.items():
-                    _class = getattr(obj, rel).__class__
-                    _id = getattr(obj, rel).id
-                    _class.objects.filter(id=_id).update(**item)
+                    if references:
+                        for rel, item in references.items():
+                            _class = getattr(obj, rel).__class__
+                            _id = getattr(obj, rel).id
+                            _class.objects.filter(id=_id).update(**item)
+            except IntegrityError:
+                print("User object with email `%s` can not be obfuscated. Please try one more time" % obj.email)
 
     @staticmethod
     def generate_random_string(text):
@@ -150,5 +155,5 @@ class Command(BaseCommand):
         """
         Return random string of the same length as input value.
         """
-        obfuscated = self.generate_random_string(email)
-        return ''.join([obfuscated[idx] if ch not in ['@', '.'] else ch for idx, ch in enumerate(email)])
+        name = email.split('@')[0]
+        return "{}@example.com".format(self.generate_random_string(name))
