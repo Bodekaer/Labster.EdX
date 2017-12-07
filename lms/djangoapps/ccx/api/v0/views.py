@@ -478,15 +478,6 @@ class CCXListView(GenericAPIView):
                 valid_input['max_students_allowed']
             )
 
-            # Hide anything that can show up in the schedule
-            hidden = 'visible_to_staff_only'
-            for chapter in master_course_object.get_children():
-                override_field_for_ccx(ccx_course_object, chapter, hidden, True)
-                for sequential in chapter.get_children():
-                    override_field_for_ccx(ccx_course_object, sequential, hidden, True)
-                    for vertical in sequential.get_children():
-                        override_field_for_ccx(ccx_course_object, vertical, hidden, True)
-
             # make the coach user a coach on the master course
             make_user_coach(coach, master_course_key)
 

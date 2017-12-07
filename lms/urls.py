@@ -935,6 +935,7 @@ if settings.FEATURES.get('ENABLE_OAUTH2_PROVIDER'):
 
 urlpatterns += (
     url(r'^labster_license/', include('labster_course_license.webhook_urls')),
+    url(r'^labster/api/users/', include('labster_course_license.user_urls')),
 )
 
 urlpatterns += (
