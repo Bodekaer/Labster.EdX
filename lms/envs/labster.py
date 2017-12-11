@@ -25,6 +25,7 @@ INSTALLED_APPS += (
     'labster_course_license',
     'labster_vouchers',
     'labster_enroll',
+    'labster_accounts',
 )
 
 LABSTER_WIKI_LINK = LABSTER_SETTINGS.get('LABSTER_WIKI_LINK', 'https://theory.labster.com/')
