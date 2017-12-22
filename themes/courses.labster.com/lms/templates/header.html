@@ -72,11 +72,6 @@ site_status_msg = get_site_status_msg(course_id)
       % if user.is_authenticated():
         <ol class="left nav-global list-inline authenticated">
         <%block name="navigation_global_links_authenticated">
-          % if settings.FEATURES.get('COURSES_ARE_BROWSABLE') and not show_program_listing:
-            <li class="item nav-global-01">
-              <a href="${marketing_link('COURSES')}">${_('Browse Labs')}</a>
-            </li>
-          % endif
           % if settings.LABSTER_FEATURES.get('ENABLE_VOUCHERS') and user.is_active:
             <li class="nav-global-01">
               <a href="${reverse('enter_voucher')}">${_('Enter access code')}</a>
