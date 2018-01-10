@@ -46,6 +46,7 @@ from third_party_auth.decorators import xframe_allow_whitelisted
 from util.bad_request_rate_limiter import BadRequestRateLimiter
 from util.date_utils import strftime_localized
 
+
 AUDIT_LOG = logging.getLogger("audit")
 log = logging.getLogger(__name__)
 
@@ -102,6 +103,33 @@ def login_and_registration_form(request, initial_mode="login"):
         except (KeyError, ValueError, IndexError):
             pass
 
+    # Start: Added by Labster
+    # Suggest student to create an account to the appropriate region server based on IP address of user.
+    login_ip_address_warning_msg = register_ip_address_warning_msg = None
+    if settings.LABSTER_FEATURES.get('ENABLE_REGION_IPADDR_WARNING'):
+        regions = configuration_helpers.get_value('REGIONS', settings.REGIONS)
+        current_region = request.session.get('country_code')
+        region = regions.get(current_region)
+        if region:
+            region_code = region['region_code']
+            login_ip_address_warning_msg = _(
+                'It appears that you are based in the {region_code}. '
+                'Please sign in <a href="{login_url}">here</a> instead.'
+            ).format(
+                region_code=region_code,
+                login_url=region['login_url']
+            )
+
+            register_ip_address_warning_msg = _(
+                'It appears that you are based in the {region_code}. '
+                'Please create an account <a href="{register_url}">here</a>.'
+            ).format(
+                region_code=region_code,
+                register_url=region['register_url'],
+            )
+
+    # End: Added by Labster
+
     # Otherwise, render the combined login/registration page
     context = {
         'data': {
@@ -118,6 +146,8 @@ def login_and_registration_form(request, initial_mode="login"):
             'login_form_desc': json.loads(form_descriptions['login']),
             'registration_form_desc': json.loads(form_descriptions['registration']),
             'password_reset_form_desc': json.loads(form_descriptions['password_reset']),
+            'login_ip_address_warning_msg': login_ip_address_warning_msg,
+            'register_ip_address_warning_msg': register_ip_address_warning_msg
         },
         'login_redirect_url': redirect_to,  # This gets added to the query string of the "Sign In" button in header
         'responsive': True,

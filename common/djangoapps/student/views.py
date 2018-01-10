@@ -126,6 +126,8 @@ from openedx.core.djangoapps.programs.models import ProgramsApiConfig
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.djangoapps.theming import helpers as theming_helpers
 
+from labster_course_license.user_utils import get_user_region
+
 
 log = logging.getLogger("edx.student")
 AUDIT_LOG = logging.getLogger("audit")
@@ -1230,6 +1232,7 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
 
         # if we didn't find this username earlier, the account for this email
         # doesn't exist, and doesn't have a corresponding password
+        msg = None
         if username != "":
             if settings.FEATURES['SQUELCH_PII_IN_LOGS']:
                 loggable_id = user_found_by_email_lookup.id if user_found_by_email_lookup else "<unknown>"
@@ -1237,23 +1240,39 @@ def login_user(request, error=""):  # pylint: disable=too-many-statements,unused
             else:
                 AUDIT_LOG.warning(u"Login failed - password for {0} is invalid".format(email))
 
-        # Labster changes
-        # If there was login error, suggest student to login to region server
-        regions = configuration_helpers.get_value('REGIONS', settings.REGIONS)
-        # List of country codes: https://dev.maxmind.com/geoip/legacy/codes/iso3166/
-        current_region = request.session.get('country_code')
-        if current_region in regions.keys():
-            region_info = regions[current_region]
-            msg = _(
-                'If you are a student in {region_name}, your university may now be using the {region_code} version of '
-                'Labster. Please try to log into <a href="{region_login_url}">{region_name}</a> region.'
-            ).format(
-                region_name=region_info['name'],
-                region_code=region_info['region_code'],
-                region_login_url=region_info['login_url'],
-            )
+        # Start: Added by Labster
         else:
-            msg = _('Email or password is incorrect.')
+            # If there was login error, check whether user with the given email exists in one of the regions. If yes,
+            # suggest student to to login to the appropriate region server.
+            regions = configuration_helpers.get_value('REGIONS', settings.REGIONS)
+            region = get_user_region(request, regions, email)
+            if region:
+                msg = _(
+                    'It appears that your account is located on our {region_code} server. '
+                    'Please sign in <a href="{login_url}">here</a> instead.'
+                ).format(
+                    region_code=region['region_code'],
+                    login_url=region['login_url'],
+                )
+            elif settings.LABSTER_FEATURES.get('ENABLE_REGION_IPADDR_WARNING'):
+                current_region = request.session.get('country_code')
+                region = regions.get(current_region)
+                # If ENABLE_REGION_IPADDR_WARNING is enabled and user does not have an account
+                # neither in Central nor in regions, suggest student to register to
+                # the appropriate region server based on IP address of user.
+                if region:
+                    msg = _(
+                        'It appears that you are based in the {region_code}. '
+                        'Please create an account <a href="{register_url}">here</a>.'
+                    ).format(
+                        region_code=region['region_code'],
+                        register_url=region['register_url'],
+                    )
+
+            msg = msg or _("Account doesn't exist.")
+
+        # End: Added by Labster
+        msg = msg or _('Email or password is incorrect.')
 
         return JsonResponse({
             "success": False,
@@ -1598,6 +1617,39 @@ def create_account_with_params(request, params):
         'REGISTRATION_EXTRA_FIELDS',
         getattr(settings, 'REGISTRATION_EXTRA_FIELDS', {})
     )
+
+    # Start: Added by Labster
+    # User can create an account only in the appropriate region or user
+    # that already enrolled in this current region.
+    email = params["email"]
+    email_enrolled = CourseEnrollmentAllowed.objects.filter(email=email).exists()
+    if not email_enrolled:
+        regions = configuration_helpers.get_value('REGIONS', settings.REGIONS)
+        region = get_user_region(request, regions, email, enrollment=True)
+        # Check if user already enrolled in other regions.
+        if region:
+            msg = _(
+                'It appears that you are already enrolled in a course hosted on our {region_code} server. '
+                'Please create an account <a href="{register_url}">here</a>.'
+            ).format(
+                region_code=region['region_code'],
+                register_url=region['register_url'],
+            )
+            raise ValidationError({'error': [msg]})
+
+        # Restrict user registration if `ALLOW_OTHER_REGION_TO_REGISTER` is
+        # disable and user region is covered by Labster.
+        if not settings.LABSTER_FEATURES.get('ALLOW_OTHER_REGION_TO_REGISTER'):
+            current_region = request.session.get('country_code')
+            region = regions.get(current_region)
+            if region:
+                msg = _(
+                    'Registration of users from {region_name} is not allowed on this server.'
+                ).format(region_name=region['name'], )
+
+                raise ValidationError({'error': [msg]})
+
+    # End: Added by Labster
 
     # Boolean of whether a 3rd party auth provider and credentials were provided in
     # the API so the newly created account can link with the 3rd party account.

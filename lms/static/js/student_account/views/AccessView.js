@@ -71,6 +71,10 @@
 
                 this.platformName = options.platform_name;
 
+                // Added by Labster
+                this.loginIpAddressWarningMsg = options.login_ip_address_warning_msg;
+                this.registerIpAddressWarningMsg = options.register_ip_address_warning_msg;
+
                 // The login view listens for 'sync' events from the reset model
                 this.resetModel = new PasswordResetModel({}, {
                     method: 'GET',
@@ -120,7 +124,8 @@
                         model: model,
                         resetModel: this.resetModel,
                         thirdPartyAuth: this.thirdPartyAuth,
-                        platformName: this.platformName
+                        platformName: this.platformName,
+                        ipAddressWarningMsg: this.loginIpAddressWarningMsg // Added by Labster
                     });
 
                     // Listen for 'password-help' event to toggle sub-views
@@ -157,7 +162,8 @@
                         fields: data.fields,
                         model: model,
                         thirdPartyAuth: this.thirdPartyAuth,
-                        platformName: this.platformName
+                        platformName: this.platformName,
+                        ipAddressWarningMsg: this.registerIpAddressWarningMsg // Added by Labster
                     });
 
                     // Listen for 'auth-complete' event so we can enroll/redirect the user appropriately.
