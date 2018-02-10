@@ -126,7 +126,7 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
 
         enrollment_obj = CourseEnrollment.enroll_by_email(student_email, course_id, course_mode)
         if email_students:
-            email_params['message'] = 'enrolled_enroll'
+            email_params['message'] = email_params.get('message', 'enrolled_enroll')
             email_params['email_address'] = student_email
             email_params['full_name'] = previous_state.full_name
             send_mail_to_student(student_email, email_params, language=language)
@@ -310,6 +310,11 @@ def get_email_params(course, auto_enroll, secure=True, course_key=None, display_
         site=stripped_site_name,
         path=reverse('register_user')
     )
+    login_url = u'{proto}://{site}{path}'.format(
+        proto=protocol,
+        site=stripped_site_name,
+        path=reverse('signin_user')
+    )
     course_url = u'{proto}://{site}{path}'.format(
         proto=protocol,
         site=stripped_site_name,
@@ -331,6 +336,7 @@ def get_email_params(course, auto_enroll, secure=True, course_key=None, display_
     email_params = {
         'site_name': stripped_site_name,
         'registration_url': registration_url,
+        'login_url': login_url,
         'course': course,
         'display_name': display_name,
         'auto_enroll': auto_enroll,
@@ -411,6 +417,10 @@ def send_mail_to_student(student, param_dict, language=None):
         'account_creation_and_enrollment': (
             'emails/enroll_email_enrolledsubject.txt',
             'emails/account_creation_and_enroll_emailMessage.txt'
+        ),
+        'enrolled_ccx_coach_enroll': (
+            'emails/enroll_email_enrolledsubject.txt',
+            'emails/enroll_email_ccx_coach_enrolledmessage.txt'
         ),
     }
 

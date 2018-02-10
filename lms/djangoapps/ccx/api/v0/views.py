@@ -490,6 +490,7 @@ class CCXListView(GenericAPIView):
                 course_key=ccx_course_key,
                 display_name=ccx_course_object.display_name
             )
+            email_params['message'] = 'enrolled_ccx_coach_enroll'
             enroll_email(
                 course_id=ccx_course_key,
                 student_email=coach.email,
