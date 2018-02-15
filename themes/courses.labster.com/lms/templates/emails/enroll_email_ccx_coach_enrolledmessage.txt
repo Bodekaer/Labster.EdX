@@ -1,0 +1,26 @@
+<%!
+from django.conf import settings
+from django.utils.translation import ugettext as _
+%>
+
+${_("Dear {full_name}").format(full_name=full_name)}
+
+${_(
+    "Our Customer Success team has created the course {course_name} for you. To enter your course, "
+    "please login here {login_url} with the following email address {email_address}. If it is the first time "
+    "we have created a course for you, you will shortly receive another email where you can choose your password."
+    ).format(
+        course_name=display_name or course.display_name_with_default_escaped,
+		login_url=login_url,
+		email_address=email_address
+	)}
+
+${_("If you have any questions, please contact your Customer Success Specialist or {contact_email}").format(
+        contact_email=settings.CONTACT_EMAIL
+	)}
+
+----
+${_("This email was automatically sent from {site_name} to "
+	"{full_name}").format(
+		site_name=site_name, full_name=full_name
+	)}

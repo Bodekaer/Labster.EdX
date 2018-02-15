@@ -24,6 +24,9 @@ from instructor.enrollment import (
     get_email_params,
 )
 
+from lms.djangoapps.ccx.models import CustomCourseForEdX
+
+
 log = logging.getLogger(__name__)
 
 ROLES = {
@@ -72,7 +75,6 @@ def _change_access(course, user, level, action, send_email=True):
 
     NOTE: will create a group if it does not yet exist.
     """
-
     try:
         role = ROLES[level](course.id)
     except KeyError:
@@ -80,7 +82,15 @@ def _change_access(course, user, level, action, send_email=True):
 
     if action == 'allow':
         if level == 'ccx_coach':
-            email_params = get_email_params(course, True)
+            # Try to using CCX course name instead of the course.
+            try:
+                ccx_course_object = CustomCourseForEdX.objects.get(pk=course.id.ccx)
+                display_name = ccx_course_object.display_name
+            except CustomCourseForEdX.DoesNotExist:
+                display_name = None
+
+            email_params = get_email_params(course, True, display_name=display_name)
+            email_params['message'] = 'enrolled_ccx_coach_enroll'
             enroll_email(
                 course_id=course.id,
                 student_email=user.email,

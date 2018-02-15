@@ -74,7 +74,8 @@ class PasswordResetFormNoActive(PasswordResetForm):
                 'user': user,
                 'token': token_generator.make_token(user),
                 'protocol': 'https' if use_https else 'http',
-                'platform_name': configuration_helpers.get_value('platform_name', settings.PLATFORM_NAME)
+                'platform_name': configuration_helpers.get_value('platform_name', settings.PLATFORM_NAME),
+                'contact_email': settings.CONTACT_EMAIL
             }
             subject = loader.render_to_string(subject_template_name, context)
             # Email subject *must not* contain newlines
