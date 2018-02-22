@@ -126,7 +126,7 @@ class AnonymousUserId(models.Model):
     unique_together = (user, course_id)
 
 
-def anonymous_id_for_user(user, course_id, save=True):
+def anonymous_id_for_user(user, course_id, save=True, allow_invalid_ids=False):
     """
     Return a unique id for a (user, course) pair, suitable for inserting
     into e.g. personalized survey links.
@@ -177,6 +177,12 @@ def anonymous_id_for_user(user, course_id, save=True):
                     "digest": digest,
                 }
             )
+        # Added by Labster
+        # This option allows to use existing anonymous_user_id after data migration
+        # from another region instead of calculated one.
+        if allow_invalid_ids is True:
+            # redefine digest with existing value from database
+            digest = anonymous_user_id.anonymous_user_id
     except IntegrityError:
         # Another thread has already created this entry, so
         # continue
