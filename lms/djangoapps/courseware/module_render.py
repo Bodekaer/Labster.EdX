@@ -701,7 +701,7 @@ def get_module_system_for_user(user, student_data,  # TODO  # pylint: disable=to
     module_class = getattr(descriptor, 'module_class', None)
     is_lti_module = not is_pure_xblock and issubclass(module_class, LTIModule)
     if is_pure_xblock or is_lti_module:
-        anonymous_student_id = anonymous_id_for_user(user, course_id)
+        anonymous_student_id = anonymous_id_for_user(user, course_id, allow_invalid_ids=True)
     else:
         anonymous_student_id = anonymous_id_for_user(user, None)
 
