@@ -12,6 +12,7 @@ TO DO sync instructor and staff flags
 import logging
 from django_comment_common.models import Role
 
+from ccx_keys.locator import CCXLocator
 from student.roles import (
     CourseBetaTesterRole,
     CourseInstructorRole,
@@ -83,11 +84,13 @@ def _change_access(course, user, level, action, send_email=True):
     if action == 'allow':
         if level == 'ccx_coach':
             # Try to using CCX course name instead of the course.
-            try:
-                ccx_course_object = CustomCourseForEdX.objects.get(pk=course.id.ccx)
-                display_name = ccx_course_object.display_name
-            except CustomCourseForEdX.DoesNotExist:
-                display_name = None
+            display_name = None
+            if isinstance(course.id, CCXLocator):
+                try:
+                    ccx_course_object = CustomCourseForEdX.objects.get(pk=course.id.ccx)
+                    display_name = ccx_course_object.display_name
+                except CustomCourseForEdX.DoesNotExist:
+                    pass
 
             email_params = get_email_params(course, True, display_name=display_name)
             email_params['message'] = 'enrolled_ccx_coach_enroll'
