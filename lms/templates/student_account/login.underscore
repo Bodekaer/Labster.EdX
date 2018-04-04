@@ -16,6 +16,12 @@
         </div>
     </div>
 
+    <% if (context.ipAddressWarningMsg) { %>
+        <div class="status submission-warning" aria-live="polite">
+            <p class="message-copy"><%= context.ipAddressWarningMsg %></p>
+        </div>
+    <% } %>
+
     <div class="status submission-error hidden">
         <h4 class="message-title"><%- gettext("We couldn't sign you in.") %></h4>
         <ul class="message-copy"></ul>

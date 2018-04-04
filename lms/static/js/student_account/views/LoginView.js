@@ -28,6 +28,7 @@
                 this.currentProvider = data.thirdPartyAuth.currentProvider || '';
                 this.errorMessage = data.thirdPartyAuth.errorMessage || '';
                 this.platformName = data.platformName;
+                this.ipAddressWarningMsg = data.ipAddressWarningMsg || ''; // Added by Labster
                 this.resetModel = data.resetModel;
 
                 this.listenTo( this.model, 'sync', this.saveSuccess );
@@ -46,7 +47,8 @@
                         errorMessage: this.errorMessage,
                         providers: this.providers,
                         hasSecondaryProviders: this.hasSecondaryProviders,
-                        platformName: this.platformName
+                        platformName: this.platformName,
+                        ipAddressWarningMsg: this.ipAddressWarningMsg, // Added by Labster
                     }
                 }));
 
