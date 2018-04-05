@@ -45,8 +45,7 @@ from student.roles import (
     GlobalStaff,
     SupportStaffRole,
     OrgInstructorRole,
-    OrgStaffRole,
-    CourseCcxCoachRole,  # Added by labster.
+    OrgStaffRole
 )
 from util.milestones_helpers import (
     get_pre_requisite_courses_not_completed,
@@ -88,12 +87,12 @@ def has_ccx_coach_role(user, course_key):
 
         if role.has_user(user):
             list_ccx = CustomCourseForEdX.objects.filter(
+                pk=ccx_id,
                 course_id=course_key.to_course_locator(),
                 coach=user
             )
-            if list_ccx.exists():
-                coach_ccx = list_ccx[0]
-                return str(coach_ccx.id) == ccx_id
+            return list_ccx.exists()
+
     else:
         raise CCXLocatorValidationException("Invalid CCX key. To verify that "
                                             "user is a coach on CCX, you must provide key to CCX")
@@ -884,11 +883,11 @@ def get_user_role(user, course_key):
         ccx = CustomCourseForEdX.objects.get(pk=course_key.ccx)
         if CourseCcxCoachRole(ccx.course_id).has_user(user):
             list_ccx = CustomCourseForEdX.objects.filter(
+                pk=course_key.ccx,
                 course_id=course_key.to_course_locator(),
                 coach=user
             )
-            if list_ccx.exists():
-                ccx_coach_role = str(list_ccx[0].id) == str(course_key.ccx)
+            ccx_coach_role = list_ccx.exists()
 
     if role:
         return role
