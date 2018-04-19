@@ -6,14 +6,15 @@ from openedx.core.djangolib.markup import HTML, Text
 
 <h2 class="hd hd-2">${_("Batch Enrollment")}</h2>
 <div class="batch-enrollment" style="float:left;width:50%">
-  <form method="POST" action="ccx_invite">
+  <form method="POST" action="ccx_invite" onsubmit="return ccxInviteForm(this)">
+  <p class="error-message"></p>
   <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
-  <label for="student-ids" class="sr">${_("Email Addresses/Usernames")}</label>
+  <label for="student-ids" class="sr">${_("Email Addresses")}</label>
   <p id="label_student_ids" class="text-helper">
-      ${_("Enter email addresses and/or usernames separated by new lines or commas.")}
+      ${_("Enter email addresses separated by new lines or commas.")}
       ${_("You will not get notification for emails that bounce, so please double-check spelling.")}
   </p>
-  <textarea rows="6" name="student-ids" id="student-ids" aria-describedby="label_student_ids" placeholder="${_("Email Addresses/Usernames")}" spellcheck="false"></textarea>
+  <textarea rows="6" name="student-ids" id="student-ids" aria-describedby="label_student_ids" placeholder="${_("Email Addresses")}" spellcheck="false"></textarea>
 
 
   <div class="enroll-option">
@@ -79,7 +80,6 @@ from openedx.core.djangolib.markup import HTML, Text
         <table>
           <thead>
             <tr>
-              <td class="label">Username</td>
               <td class="label">Email</td>
               <td class="label">Revoke access</td>
               <td class="label">${_("Enrollment Status")}</td>
@@ -88,17 +88,15 @@ from openedx.core.djangolib.markup import HTML, Text
           <tbody>
             %for member in ccx_members:
             <tr>
-              <td>${member.user}</td>
               <td>${member.user.email}</td>
               <td><a class="revoke"><span class="fa fa-times-circle" aria-hidden="true"></span> ${_("Revoke access")}</a></td>
-               <td>${_("Enrolled")}</td>
+              <td>${_("Enrolled")}</td>
             </tr>
             %endfor
             <!-- Start: Added by Labster -->
             <!-- Add enrollment status -->
             %for member in ccx_enrolls:
             <tr>
-              <td></td>
               <td>${member.email}</td>
               <td><a class="revoke"><span class="fa fa-times-circle" aria-hidden="true"></span> ${_("Revoke access")}</a></td>
               <td>${_("Pending")}</td>
@@ -109,8 +107,9 @@ from openedx.core.djangolib.markup import HTML, Text
         </table>
       </div>
       <div class="bottom-bar">
-        <label for="student-id" class="sr">${_("Enter username or email")}</label>
-        <input name="student-id" id="student-id" class="add-field" placeholder="${_("Enter username or email")}" type="text">
+        <label for="student-id" class="sr">${_("Enter email")}</label>
+        <input name="student-id" id="student-id" class="add-field" placeholder="${_("Enter email")}" type="email">
+        <input type="submit" style="display: none">
         <input name="student-action" class="add" value="Add Student" type="button">
         <div class="enroll-option">
             <input type="checkbox" name="auto-enroll" id="auto-enroll" value="Auto-Enroll" checked="yes" aria-describedby="auto-enroll-helper" disabled>
