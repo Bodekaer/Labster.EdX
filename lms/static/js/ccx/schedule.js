@@ -141,12 +141,19 @@ var edx = edx || {};
           units.map(self.show);
           var unit = units[units.length - 1];
           if (!_.isUndefined(unit)) {
+            // Start: Changed By Labster
+            // Allow Start and Due date to be empty.
+            unit.start = start;
+            unit.due = due;
+            /*
             if (!_.isNull(start)) {
               unit.start = start;
             }
             if (!_.isNull(due)) {
               unit.due = due;
             }
+            End: Changed By Labster
+            */
           }
           self.schedule_apply([unit], self.show);
           self.schedule_collection.set(self.schedule);
@@ -459,25 +466,31 @@ var edx = edx || {};
           event.preventDefault();
           var date = $(this).find('input[name=date]').val(),
           time = $(this).find('input[name=time]').val();
-          var valid_date = new Date(date);
-          if (isNaN(valid_date.valueOf())) {
-            alert('Please enter a valid date');
-            return;
+          // Start: Changed By Labster
+          // Allow Start and Due date to be empty.
+          var CcxDateTime = (date && time) ? date + ' ' + time: null;
+          if(CcxDateTime){
+              var valid_date = new Date(date);
+              if (isNaN(valid_date.valueOf())) {
+                alert('Please enter a valid date');
+                return;
+              }
+              var valid_time = /^\d{1,2}:\d{2}?$/;
+              if (!time.match(valid_time)) {
+                alert('Please enter a valid time');
+                return;
+              }
           }
-          var valid_time = /^\d{1,2}:\d{2}?$/;
-          if (!time.match(valid_time)) {
-            alert('Please enter a valid time');
-            return;
-          }
+          // End: Changed By Labster
           if (what === 'start') {
-            unit.start = date + ' ' + time;
+            unit.start = CcxDateTime;
             // Start: Changed By Labster
             // if (unit.category === "sequential") {
             //   self.updateChildrenDates(unit, what, unit.start);
             // }
             // End: Changed By Labster
           } else {
-            unit.due = date + ' ' + time;
+            unit.due = CcxDateTime;
             // Start: Changed By Labster
             // if (unit.category === "sequential") {
             //   self.updateChildrenDates(unit, what, unit.due);
