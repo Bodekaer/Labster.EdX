@@ -3,7 +3,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 %>
 
-${_("Dear {full_name}").format(full_name=full_name)}
+${_("Hi there,")}
 
 ${_(
     "Our Customer Success team has created the course {course_name} for you. To enter your course, "
