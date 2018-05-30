@@ -3,7 +3,11 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 %>
 
-${_("Hi there,")}
+% if full_name:
+${_("Dear {full_name}, ").format(full_name=full_name)}
+% else:
+${_("Hi there, ")}
+% endif
 
 ${_(
     "Our Customer Success team has created the course {course_name} for you. To enter your course, "
