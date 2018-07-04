@@ -7,6 +7,7 @@ authored by dstufft (https://github.com/dstufft)
 """
 from __future__ import division
 import string
+import unicodedata
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -65,6 +66,13 @@ def validate_password_complexity(value):
 
     uppercase, lowercase, digits, non_ascii, punctuation = set(), set(), set(), set(), set()
 
+    # Start: Added by Labster
+    # Add complexity of password for `NUMERIC` and `ALPHABETIC`.
+    # This changes adapted to the existing features in current edx.
+    # For more information, please see the documentation that introduced this change:
+    #   https://github.com/edx/edx-platform/wiki/Optional-Password-Policy-Enforcement
+    alphabetic, numeric = [], []
+
     for character in value:
         if character.isupper():
             uppercase.add(character)
@@ -76,6 +84,11 @@ def validate_password_complexity(value):
             punctuation.add(character)
         else:
             non_ascii.add(character)
+
+        if character.isalpha():
+            alphabetic.append(character)
+        if 'N' in unicodedata.category(character):  # Check to see if the unicode category contains a 'N'umber
+            numeric.append(character)
 
     words = set(value.split())
 
@@ -92,6 +105,12 @@ def validate_password_complexity(value):
         errors.append(_("must contain {0} or more non ascii characters").format(complexities["NON ASCII"]))
     if len(words) < complexities.get("WORDS", 0):
         errors.append(_("must contain {0} or more unique words").format(complexities["WORDS"]))
+    if len(numeric) < complexities.get("NUMERIC", 0):
+        errors.append(_("must contain {0} or more numbers").format(complexities["NUMERIC"]))
+    if len(alphabetic) < complexities.get("ALPHABETIC", 0):
+        errors.append(_("must contain {0} or more letters").format(complexities["ALPHABETIC"]))
+
+    # End: Added by Labster
 
     if errors:
         raise ValidationError(message.format(u', '.join(errors)), code=code)
