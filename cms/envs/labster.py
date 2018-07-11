@@ -24,3 +24,10 @@ LABSTER_WIKI_LINK = LABSTER_SETTINGS.get('LABSTER_WIKI_LINK', 'https://theory.la
 RAVEN_CONFIG = AUTH_TOKENS.get('RAVEN_CONFIG', {})
 if RAVEN_CONFIG.get('dsn'):
     INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
+
+# https://github.com/edx/edx-platform/wiki/Optional-Password-Policy-Enforcement
+PASSWORD_MIN_LENGTH = 8
+PASSWORD_COMPLEXITY = {
+    'ALPHABETIC': 1,
+    'NUMERIC': 1,
+}
