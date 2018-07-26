@@ -15,7 +15,10 @@ from openedx.core.djangolib.markup import HTML, Text
 
     <p>${Text(_("Something went wrong. Email programs sometimes split URLs "
                 "into two lines, so make sure the URL you're using is " "formatted correctly. If you still have issues, "
-                "please contact us at {tech_support_link}.")).format(tech_support_link=HTML('<a href="{0}">{0}</a>').format(settings.LABSTER_TECH_SUPPORT_LINK)
+                "please {link_start}contact us{link_end}.")).format(
+                    link_start=HTML('<a href="{0}">'.format(settings.LABSTER_TECH_SUPPORT_LINK)),
+                    link_end=HTML('</a>')
+                )
         )}</p>
 
     <p>${Text(_('Return to the {link_start}home page{link_end}.')).format(

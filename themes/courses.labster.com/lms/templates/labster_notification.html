@@ -15,8 +15,9 @@ from openedx.core.djangolib.markup import HTML
           ${_('You can find the previous version of the platform {old_labster_link}.').format(
             old_labster_link='<a href="http://temp.labster.com">{link_text}</a>'.format(link_text=_('here'))
           )}<br>
-          ${_('If you have any questions, please contact us at {tech_support_link}.').format(
-            tech_support_link=HTML('<a href="{0}">{0}</a>').format(settings.LABSTER_TECH_SUPPORT_LINK)
+          ${_('If you have any questions, please {link_start}contact us{link_end}.').format(
+              link_start=HTML('<a href="{0}">'.format(settings.LABSTER_TECH_SUPPORT_LINK)),
+              link_end=HTML('</a>')
           )}
         </p>
       </div>

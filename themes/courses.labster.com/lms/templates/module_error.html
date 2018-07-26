@@ -1,4 +1,7 @@
-<%! from django.utils.translation import ugettext as _ %>
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML
+%>
 
 <section class="outside-app">
   <h1>
@@ -8,9 +11,10 @@
   </h1>
   <p>
     ${_("We're sorry, this module is temporarily unavailable. Our staff is working "
-    "to fix it as soon as possible. Please contact us at {tech_support_link} to "
+    "to fix it as soon as possible. Please {link_start}contact us{link_end} to "
     "report any problems or downtime.").format(
-        tech_support_link=u"<a href=\"{0}\">{0}</a>".format(settings.LABSTER_TECH_SUPPORT_LINK)
+        link_start=HTML('<a href="{0}">'.format(settings.LABSTER_TECH_SUPPORT_LINK)),
+        link_end=HTML('</a>')
     )}
   </p>
 

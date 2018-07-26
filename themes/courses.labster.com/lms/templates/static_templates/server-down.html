@@ -14,8 +14,9 @@ from openedx.core.djangolib.markup import HTML, Text
       </h1>
       <p>
         ${Text(_("Our staff is currently working to get the site back up as soon as possible. "
-        "Please contact us at {tech_support_link} to report any problems or downtime.")).format(
-            tech_support_link=HTML('<a href="{0}">{0}</a>').format(settings.LABSTER_TECH_SUPPORT_LINK)
+        "Please {link_start}contact us{link_end} to report any problems or downtime.")).format(
+            link_start=HTML('<a href="{0}">'.format(settings.LABSTER_TECH_SUPPORT_LINK)),
+            link_end=HTML('</a>')
         )}</p>
     </section>
 </main>
