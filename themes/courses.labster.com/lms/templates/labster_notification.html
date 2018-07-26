@@ -1,5 +1,6 @@
 <%!
 from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML
 %>
 
 % if settings.FEATURES.get('SHOW_LABSTER_NOTIFICATION'):
@@ -14,7 +15,9 @@ from django.utils.translation import ugettext as _
           ${_('You can find the previous version of the platform {old_labster_link}.').format(
             old_labster_link='<a href="http://temp.labster.com">{link_text}</a>'.format(link_text=_('here'))
           )}<br>
-          ${_('If you have any questions, write us on {email_link}.').format(email_link='support@labster.com')}
+          ${_('If you have any questions, please contact us at {tech_support_link}.').format(
+            tech_support_link=HTML('<a href="{0}">{0}</a>').format(settings.LABSTER_TECH_SUPPORT_LINK)
+          )}
         </p>
       </div>
       <ul class="nav-actions">

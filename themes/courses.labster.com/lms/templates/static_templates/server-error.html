@@ -1,0 +1,22 @@
+<%page expression_filter="h"/>
+<%namespace name='static' file='../static_content.html'/>
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML, Text
+%>
+<%inherit file="../main.html" />
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <section class="outside-app">
+      <h1>
+        ${Text(_(u"There has been a 500 error on the {platform_name} servers")).format(
+            platform_name=HTML("<em>{platform_name}</em>").format(platform_name=Text(static.get_platform_name()))
+        )}
+      </h1>
+      <p>
+        ${Text(_('Please wait a few seconds and then reload the page. If the problem persists, please contact us at {tech_support_link}.')).format(
+            tech_support_link=HTML('<a href="{0}">{0}</a>').format(settings.LABSTER_TECH_SUPPORT_LINK)
+        )}
+      </p>
+    </section>
+</main>
