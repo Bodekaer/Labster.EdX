@@ -1,0 +1,23 @@
+<%page expression_filter="h"/>
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML, Text
+%>
+<%inherit file="../main.html" />
+
+<main id="main" aria-label="Content" tabindex="-1">
+    <section class="outside-app">
+      <h1>
+        ${Text(_("Currently the {platform_name} servers are overloaded")).format(
+            platform_name=HTML("<em>{}</em>").format(platform_name=Text(settings.PLATFORM_NAME))
+        )}
+      </h1>
+      <p>
+        ${Text(_("Our staff is currently working to get the site back up as soon as possible. "
+        "Please {link_start}contact us{link_end} to report any problems or downtime.")).format(
+            link_start=HTML('<a href="{0}">'.format(settings.LABSTER_TECH_SUPPORT_LINK)),
+            link_end=HTML('</a>')
+        )}
+      </p>
+    </section>
+</main>

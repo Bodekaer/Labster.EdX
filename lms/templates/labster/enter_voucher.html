@@ -3,6 +3,7 @@
     from django.utils.translation import ugettext as _
     from django.core.urlresolvers import reverse
     from django.conf import settings
+    from openedx.core.djangolib.markup import HTML
 %>
 
 <%block name="pagetitle">${_("Enter access code")}</%block>
@@ -59,7 +60,10 @@
                 required
                 aria-required="true" aria-describedby="code-tip"/>
               <span class="tip tip-input" id="code-tip">
-                ${_("In case you have any questions please write us at {support_link}").format(support_link='<a href="mailto:%s">%s</a>' % (settings.CONTACT_EMAIL, settings.CONTACT_EMAIL))}
+                ${_("In case you have any questions please {link_start}contact us{link_end}.").format(
+                    link_start=HTML('<a href="{0}">'.format(settings.LABSTER_TECH_SUPPORT_LINK)),
+                    link_end=HTML('</a>')
+                )}
               </span>
             </li>
           </ol>

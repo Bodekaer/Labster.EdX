@@ -645,8 +645,27 @@ body .login-register .nav-btn {
       line-height: 1.5;
     }
 
-    a:hover, a:focus {
-      color: #fff;
+    a {
+
+      &:hover, &:focus {
+        color: #fff;
+      }
+
+      &.ui-btn-non {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        box-sizing: inherit;
+        display: inline-block;
+        letter-spacing: inherit;
+        margin: 0px;
+        padding: 0px;
+
+        &:hover, &:focus {
+            color: $labster-light-blue;
+        }
+      }
+
     }
   }
 }

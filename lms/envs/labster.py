@@ -29,6 +29,9 @@ INSTALLED_APPS += (
     'labster_enroll',
 )
 
+LABSTER_TECH_SUPPORT_LINK = LABSTER_SETTINGS.get(
+    'LABSTER_TECH_SUPPORT_LINK', 'https://www.labster.com/contact-labster-support-team/'
+)
 LABSTER_WIKI_LINK = LABSTER_SETTINGS.get('LABSTER_WIKI_LINK', 'https://theory.labster.com/')
 LABSTER_API_AUTH_TOKEN = LABSTER_AUTH.get('LABSTER_API_AUTH_TOKEN', '')
 
