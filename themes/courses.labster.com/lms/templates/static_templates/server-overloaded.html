@@ -9,7 +9,7 @@ from openedx.core.djangolib.markup import HTML, Text
     <section class="outside-app">
       <h1>
         ${Text(_("Currently the {platform_name} servers are overloaded")).format(
-            platform_name=HTML("<em>{}</em>").format(platform_name=Text(settings.PLATFORM_NAME))
+            platform_name=HTML("<em>{platform_name}</em>").format(platform_name=Text(settings.PLATFORM_NAME))
         )}
       </h1>
       <p>
