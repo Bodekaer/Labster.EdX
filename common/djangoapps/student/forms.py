@@ -75,7 +75,8 @@ class PasswordResetFormNoActive(PasswordResetForm):
                 'token': token_generator.make_token(user),
                 'protocol': 'https' if use_https else 'http',
                 'platform_name': configuration_helpers.get_value('platform_name', settings.PLATFORM_NAME),
-                'contact_email': settings.CONTACT_EMAIL
+                'contact_email': settings.CONTACT_EMAIL,
+                'support_link': settings.LABSTER_TECH_SUPPORT_LINK
             }
             subject = loader.render_to_string(subject_template_name, context)
             # Email subject *must not* contain newlines
