@@ -1,5 +1,7 @@
-<%! from django.utils.translation import ugettext as _ %>
-<%! from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers %>
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+%>
 ${_("Thank you for signing up for {platform_name}.").format(
     platform_name=configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)
 )}
@@ -16,9 +18,11 @@ https://${ site }/activate/${ key }
 http://${ site }/activate/${ key }
 % endif
 
-${_("If you have any questions please contact: {support_email}").format(
-    support_email=settings.BUGS_EMAIL
-)}
+${_("If you have any questions, please contact your "
+    "Customer Success Specialist or contact us at {support_link} .").format(
+      support_link=settings.LABSTER_TECH_SUPPORT_LINK
+    )}
+
 ${_("If you did not request this mail, you do not need to do anything further. "
 "You will not receive any further communications from {platform_name}.").format(
     platform_name=configuration_helpers.get_value('PLATFORM_NAME', settings.PLATFORM_NAME)

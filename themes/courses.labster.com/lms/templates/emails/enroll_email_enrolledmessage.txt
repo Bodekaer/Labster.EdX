@@ -1,6 +1,10 @@
 <%! from django.utils.translation import ugettext as _ %>
 
-${_("Dear {full_name}").format(full_name=full_name)}
+% if full_name:
+${_("Dear {full_name}, ").format(full_name=full_name)}
+% else:
+${_("Hi there, ")}
+% endif
 
 ${_("You have been enrolled in {course_name} at {site_name} by a member "
 	"of the course staff. The course should now appear on your {site_name} "

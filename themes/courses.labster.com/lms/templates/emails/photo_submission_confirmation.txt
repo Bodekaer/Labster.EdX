@@ -1,0 +1,15 @@
+<%! from django.utils.translation import ugettext as _ %>
+
+% if full_name:
+${_("Dear {full_name}, ").format(full_name=full_name)}
+% else:
+${_("Hi there, ")}
+% endif
+
+${_("Thanks for submitting your photos!")}
+
+${_("We've received your information and the verification process has begun. You can check the status of the verification process on your dashboard.")}
+
+${_("Thank you,")}
+
+${_("The {platform_name} team").format(platform_name=platform_name)}

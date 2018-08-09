@@ -19,9 +19,10 @@ ${_(
 		email_address=email_address
 	)}
 
-${_("If you have any questions, please contact your Customer Success Specialist or {contact_email}").format(
-        contact_email=settings.CONTACT_EMAIL
-	)}
+${_("If you have any questions, please contact your "
+    "Customer Success Specialist or contact us at {support_link} .").format(
+        support_link=settings.LABSTER_TECH_SUPPORT_LINK
+    )}
 
 ----
 ${_("This email was automatically sent from {site_name} to "
