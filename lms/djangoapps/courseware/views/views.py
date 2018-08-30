@@ -261,6 +261,7 @@ def jump_to(_request, course_id, location):
     return redirect(redirect_url)
 
 
+@login_required
 @ensure_csrf_cookie
 @ensure_valid_course_key
 def course_info(request, course_id):
