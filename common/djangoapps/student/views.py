@@ -2218,13 +2218,7 @@ def validate_password(user, password):
     """
     err_msg = None
 
-    if settings.FEATURES.get('ENFORCE_PASSWORD_POLICY', False):
-        try:
-            validate_password_strength(password)
-        except ValidationError as err:
-            err_msg = _('Password: ') + '; '.join(err.messages)
-
-    # also, check the password reuse policy
+    # check the password reuse policy
     if not PasswordHistory.is_allowable_password_reuse(user, password):
         if user.is_staff:
             num_distinct = settings.ADVANCED_SECURITY_CONFIG['MIN_DIFFERENT_STAFF_PASSWORDS_BEFORE_REUSE']
@@ -2262,7 +2256,7 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
     """
     # convert old-style base36-encoded user id to base64
     uidb64 = uidb36_to_uidb64(uidb36)
-    platform_name = {
+    extra_context = {
         "platform_name": configuration_helpers.get_value('platform_name', settings.PLATFORM_NAME)
     }
     try:
@@ -2272,7 +2266,7 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
         # if there's any error getting a user, just let django's
         # password_reset_confirm function handle it.
         return password_reset_confirm(
-            request, uidb64=uidb64, token=token, extra_context=platform_name
+            request, uidb64=uidb64, token=token, extra_context=extra_context
         )
 
     if request.method == 'POST':
@@ -2288,16 +2282,24 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
                 'title': _('Password reset unsuccessful'),
                 'err_msg': password_err_msg,
             }
-            context.update(platform_name)
+            context.update(extra_context)
             return TemplateResponse(
                 request, 'registration/password_reset_confirm.html', context
             )
+
+        # Move this validation from `validate_password` so the error message will show in the view with form exist.
+        if settings.FEATURES.get('ENFORCE_PASSWORD_POLICY', False):
+            try:
+                validate_password_strength(password)
+            except ValidationError as err:
+                extra_context['err_msg'] = _('Password: ') + '; '.join(err.messages)
+
 
         # remember what the old password hash is before we call down
         old_password_hash = user.password
 
         response = password_reset_confirm(
-            request, uidb64=uidb64, token=token, extra_context=platform_name
+            request, uidb64=uidb64, token=token, extra_context=extra_context
         )
 
         # get the updated user
@@ -2310,7 +2312,7 @@ def password_reset_confirm_wrapper(request, uidb36=None, token=None):
 
     else:
         response = password_reset_confirm(
-            request, uidb64=uidb64, token=token, extra_context=platform_name
+            request, uidb64=uidb64, token=token, extra_context=extra_context
         )
 
         response_was_successful = response.context_data.get('validlink')
