@@ -144,10 +144,13 @@ def activate_voucher_view(request):
     course_licenses = CourseLicense.objects.filter(license_code=license_code)
 
     if not course_licenses:
-        messages.error(
-            request,
-            _("Cannot find a course for provided access code '{}'. Please contact Labster support team.").format(code)
+        invalid_msg = _(
+            "Your voucher is valid, however, there is no course linked to it here. It is likely that your "
+            "institution has integrated Labster simulations into its Learning Management System. <br /><br />"
+            "Please find your course in your LMS, launch a simulation and apply the voucher there. If you are not "
+            "sure where to find your course, please refer to your instructor."
         )
+        messages.error(request, invalid_msg)
         return redirect(enter_voucher_url)
 
     course_license = course_licenses[0]
