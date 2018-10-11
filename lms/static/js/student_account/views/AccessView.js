@@ -74,7 +74,7 @@
                 // Added by Labster
                 this.loginIpAddressWarningMsg = options.login_ip_address_warning_msg;
                 this.registerIpAddressWarningMsg = options.register_ip_address_warning_msg;
-
+                this.accountCreationWarningMsg = options.account_creation_warning_msg;
                 // The login view listens for 'sync' events from the reset model
                 this.resetModel = new PasswordResetModel({}, {
                     method: 'GET',
@@ -163,7 +163,8 @@
                         model: model,
                         thirdPartyAuth: this.thirdPartyAuth,
                         platformName: this.platformName,
-                        ipAddressWarningMsg: this.registerIpAddressWarningMsg // Added by Labster
+                        ipAddressWarningMsg: this.registerIpAddressWarningMsg, // Added by Labster
+                        accountCreationWarningMsg: this.accountCreationWarningMsg // Added by Labster
                     });
 
                     // Listen for 'auth-complete' event so we can enroll/redirect the user appropriately.

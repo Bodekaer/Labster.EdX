@@ -104,11 +104,21 @@ def login_and_registration_form(request, initial_mode="login"):
             pass
 
     # Start: Added by Labster
+    # Show an information message text as it would prevent students to create unnecessary Labster accounts.
+    account_creation_warning_msg = _(
+        "Have you checked your course module on your school's learning management system?<br /><br />"
+        "Labster simulations might have been already integrated into your course module. In this case, "
+        "you do NOT need to create a Labster account. We highly recommend you to log in to "
+        "your course module and check if you already have access to the simulations before creating an account.<br /><br />"
+        "If you are not sure, please refer to your instructor."
+    )
+
     # Suggest student to create an account to the appropriate region server based on IP address of user.
     login_ip_address_warning_msg = register_ip_address_warning_msg = None
     if settings.LABSTER_FEATURES.get('ENABLE_REGION_IPADDR_WARNING'):
         regions = configuration_helpers.get_value('REGIONS', settings.REGIONS)
         current_region = request.session.get('country_code')
+        # current_region = "UK"
         region = regions.get(current_region)
         if region:
             region_code = region['region_code']
@@ -127,6 +137,11 @@ def login_and_registration_form(request, initial_mode="login"):
                 region_code=region_code,
                 register_url=region['register_url'],
             )
+
+            # Remove account creation message because we already have this warning message and the user
+            # should open the link.
+            account_creation_warning_msg = None
+
 
     # End: Added by Labster
 
@@ -147,7 +162,8 @@ def login_and_registration_form(request, initial_mode="login"):
             'registration_form_desc': json.loads(form_descriptions['registration']),
             'password_reset_form_desc': json.loads(form_descriptions['password_reset']),
             'login_ip_address_warning_msg': login_ip_address_warning_msg,
-            'register_ip_address_warning_msg': register_ip_address_warning_msg
+            'register_ip_address_warning_msg': register_ip_address_warning_msg,
+            'account_creation_warning_msg': account_creation_warning_msg
         },
         'login_redirect_url': redirect_to,  # This gets added to the query string of the "Sign In" button in header
         'responsive': True,

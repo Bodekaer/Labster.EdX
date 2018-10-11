@@ -2,6 +2,10 @@
     <div class="status submission-warning" aria-live="polite">
         <p class="message-copy"><%= context.ipAddressWarningMsg %></p>
     </div>
+<% } else if (context.accountCreationWarningMsg) { %>
+    <div class="status submission-warning" aria-live="polite">
+        <p class="message-copy"><%= context.accountCreationWarningMsg %></p>
+    </div>
 <% } %>
 
 <div class="status submission-error hidden" aria-live="polite">

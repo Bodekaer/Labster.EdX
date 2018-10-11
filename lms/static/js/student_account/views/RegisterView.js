@@ -30,6 +30,7 @@
                 this.errorMessage = data.thirdPartyAuth.errorMessage || '';
                 this.platformName = data.platformName;
                 this.ipAddressWarningMsg = data.ipAddressWarningMsg || ''; // Added by Labster
+                this.accountCreationWarningMsg = data.accountCreationWarningMsg || ''; // Added by Labster
                 this.autoSubmit = data.thirdPartyAuth.autoSubmitRegForm;
                 this.listenTo( this.model, 'sync', this.saveSuccess );
             },
@@ -49,6 +50,7 @@
                         hasSecondaryProviders: this.hasSecondaryProviders,
                         platformName: this.platformName,
                         ipAddressWarningMsg: this.ipAddressWarningMsg, // Added by Labster
+                        accountCreationWarningMsg: this.accountCreationWarningMsg, // Added by Labster
                     }
                 }));
 
