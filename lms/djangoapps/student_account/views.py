@@ -105,7 +105,7 @@ def login_and_registration_form(request, initial_mode="login"):
 
     # Start: Added by Labster
     # Show an information message text as it would prevent students to create unnecessary Labster accounts.
-    account_creation_warning_msg = _(
+    register_user_info = _(
         "Have you checked your course module on your school's learning management system?<br /><br />"
         "Labster simulations might have been already integrated into your course module. In this case, "
         "you do NOT need to create a Labster account. We highly recommend you to log in to "
@@ -114,15 +114,14 @@ def login_and_registration_form(request, initial_mode="login"):
     )
 
     # Suggest student to create an account to the appropriate region server based on IP address of user.
-    login_ip_address_warning_msg = register_ip_address_warning_msg = None
+    login_user_info = None
     if settings.LABSTER_FEATURES.get('ENABLE_REGION_IPADDR_WARNING'):
         regions = configuration_helpers.get_value('REGIONS', settings.REGIONS)
         current_region = request.session.get('country_code')
-        # current_region = "UK"
         region = regions.get(current_region)
         if region:
             region_code = region['region_code']
-            login_ip_address_warning_msg = _(
+            login_user_info = _(
                 'It appears that you are based in the {region_code}. '
                 'Please sign in <a href="{login_url}">here</a> instead.'
             ).format(
@@ -130,18 +129,13 @@ def login_and_registration_form(request, initial_mode="login"):
                 login_url=region['login_url']
             )
 
-            register_ip_address_warning_msg = _(
+            register_user_info = _(
                 'It appears that you are based in the {region_code}. '
                 'Please create an account <a href="{register_url}">here</a>.'
             ).format(
                 region_code=region_code,
                 register_url=region['register_url'],
             )
-
-            # Remove account creation message because we already have this warning message and the user
-            # should open the link.
-            account_creation_warning_msg = None
-
 
     # End: Added by Labster
 
@@ -161,9 +155,8 @@ def login_and_registration_form(request, initial_mode="login"):
             'login_form_desc': json.loads(form_descriptions['login']),
             'registration_form_desc': json.loads(form_descriptions['registration']),
             'password_reset_form_desc': json.loads(form_descriptions['password_reset']),
-            'login_ip_address_warning_msg': login_ip_address_warning_msg,
-            'register_ip_address_warning_msg': register_ip_address_warning_msg,
-            'account_creation_warning_msg': account_creation_warning_msg
+            'login_user_info': login_user_info,
+            'register_user_info': register_user_info
         },
         'login_redirect_url': redirect_to,  # This gets added to the query string of the "Sign In" button in header
         'responsive': True,
