@@ -16,9 +16,9 @@
         </div>
     </div>
 
-    <% if (context.ipAddressWarningMsg) { %>
+    <% if (context.userInfo) { %>
         <div class="status submission-warning" aria-live="polite">
-            <p class="message-copy"><%= context.ipAddressWarningMsg %></p>
+            <p class="message-copy"><%= context.userInfo %></p>
         </div>
     <% } %>
 
