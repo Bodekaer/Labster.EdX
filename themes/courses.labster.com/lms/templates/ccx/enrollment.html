@@ -86,7 +86,7 @@ from openedx.core.djangolib.markup import HTML, Text
           </colgroup>
           <thead>
             <tr>
-              <td class="label">Name</td>
+              <td class="label">Full Name</td>
               <td class="label">Email</td>
               <td class="label">Revoke access</td>
               <td class="label">${_("Enrollment Status")}</td>
@@ -95,7 +95,7 @@ from openedx.core.djangolib.markup import HTML, Text
           <tbody>
             %for member in ccx_members:
             <tr>
-              <td>${member.user.profile.name}</td>
+              <td>${member.user.profile.name if member.user.profile else ''}</td>
               <td>${member.user.email}</td>
               <td><a class="revoke"><span class="fa fa-times-circle" aria-hidden="true"></span> ${_("Revoke access")}</a></td>
               <td>${_("Enrolled")}</td>
