@@ -161,7 +161,7 @@ def dashboard(request, course, ccx=None):
         # Hide internal users from coaches view.
         is_staff = has_access(request.user, 'staff', course)
         is_instructor = has_access(request.user, 'instructor', course)
-        ccx_members = CourseEnrollment.objects.filter(course_id=ccx_locator, is_active=True)
+        ccx_members = CourseEnrollment.objects.filter(course_id=ccx_locator, is_active=True).select_related('user__profile')
         ccx_enrolls = CourseEnrollmentAllowed.may_enroll_and_unenrolled(ccx_locator)
         if not all([is_staff, is_instructor]):
             ccx_members = ccx_members.exclude(user__courseaccessrole__role__in=('instructor', 'staff',))

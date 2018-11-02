@@ -5,7 +5,7 @@ from openedx.core.djangolib.markup import HTML, Text
 %>
 
 <h2 class="hd hd-2">${_("Batch Enrollment")}</h2>
-<div class="batch-enrollment" style="float:left;width:50%">
+<div class="batch-enrollment" style="float:left;width:45%">
   <form method="POST" action="ccx_invite" onsubmit="return ccxInviteForm(this)">
   <p class="error-message"></p>
   <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
@@ -62,7 +62,7 @@ from openedx.core.djangolib.markup import HTML, Text
   </form>
 </div>
 
-<div class="member-lists-management" style="float:left;width:50%">
+<div class="member-lists-management" style="float:left;width:55%">
   <form method="POST" action="ccx_manage_student" class="ccx-manage-student-form">
   <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
   <div class="auth-list-container active">
@@ -78,8 +78,15 @@ from openedx.core.djangolib.markup import HTML, Text
           </div>
         %endif
         <table>
+          <colgroup>
+            <col width="50">
+            <col width="70">
+            <col width="50">
+            <col width="35">
+          </colgroup>
           <thead>
             <tr>
+              <td class="label">Full Name</td>
               <td class="label">Email</td>
               <td class="label">Revoke access</td>
               <td class="label">${_("Enrollment Status")}</td>
@@ -88,6 +95,7 @@ from openedx.core.djangolib.markup import HTML, Text
           <tbody>
             %for member in ccx_members:
             <tr>
+              <td>${member.user.profile.name if member.user.profile else ''}</td>
               <td>${member.user.email}</td>
               <td><a class="revoke"><span class="fa fa-times-circle" aria-hidden="true"></span> ${_("Revoke access")}</a></td>
               <td>${_("Enrolled")}</td>
@@ -97,6 +105,7 @@ from openedx.core.djangolib.markup import HTML, Text
             <!-- Add enrollment status -->
             %for member in ccx_enrolls:
             <tr>
+              <td></td>
               <td>${member.email}</td>
               <td><a class="revoke"><span class="fa fa-times-circle" aria-hidden="true"></span> ${_("Revoke access")}</a></td>
               <td>${_("Pending")}</td>
