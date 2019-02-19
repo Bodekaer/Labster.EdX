@@ -178,7 +178,13 @@ def activate_voucher_view(request):
         messages.error(request, _(u"No course found for enrollment."))
         return redirect(enter_voucher_url)
     except CourseEnrollmentExistsError:
-        messages.error(request, _(u"You have been already enrolled to the course before."))
+        messages.error(
+            request,
+            _(
+                u"You have successfully activated the access code and enrolled yourself in the course. "
+                u"Please continue to the dashboard to see your course and access the simulations."
+            )
+        )
         return redirect(enter_voucher_url)
     except CourseEnrollmentError:
         messages.error(
