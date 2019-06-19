@@ -9,6 +9,7 @@ from courseware.courses import get_course_info_section, get_course_date_summary
 
 from openedx.core.djangoapps.self_paced.models import SelfPacedConfiguration
 from openedx.core.djangolib.markup import HTML, Text
+from lms.djangoapps.ccx.overrides import get_current_ccx
 %>
 
 <%block name="pagetitle">${_("{course_number} Course Info").format(course_number=course.display_number_with_default)}</%block>
@@ -59,6 +60,15 @@ from openedx.core.djangolib.markup import HTML, Text
       <div class="home">
         <div class="page-header-main">
             <h1 class="page-title">${_("Welcome to {org}'s {course_name}!").format(org=course.display_org_with_default, course_name=course.display_number_with_default)}</h1>
+            <%
+              display_name = None
+              ccx = get_current_ccx(course.id)
+              if ccx:
+                display_name = ccx.display_name
+            %>
+            % if display_name:
+                <h2 class="page-subtitle">${display_name}</h2>
+            % endif
         </div>
         % if last_accessed_courseware_url:
           <div class="page-header-secondary">
