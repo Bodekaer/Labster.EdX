@@ -14,7 +14,8 @@ LABSTER_FEATURES = {
     "ENABLE_WIKI": True,
     "ENABLE_VOUCHERS": True,
     "ENABLE_REGION_IPADDR_WARNING": True,
-    "ALLOW_OTHER_REGION_TO_REGISTER": True
+    "ALLOW_OTHER_REGION_TO_REGISTER": True,
+    "LICENSE_SERVICE": False
 }
 
 
@@ -27,6 +28,7 @@ INSTALLED_APPS += (
     'labster_course_license',
     'labster_vouchers',
     'labster_enroll',
+    'oauth2_client',
 )
 
 LABSTER_TECH_SUPPORT_LINK = LABSTER_SETTINGS.get(
