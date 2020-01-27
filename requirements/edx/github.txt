@@ -99,3 +99,4 @@ git+https://github.com/edx-solutions/xblock-drag-and-drop-v2@v2.0.7#egg=xblock-d
 
 # Labster
 -e git+git@github.com:Livit/Livit.Learn.EdxCourseLicenses.git#egg=labster_course_license
+-e git+ssh://git@github.com/Livit/Labster.OAuth2Client.git@feature/edx-support#egg=oauth2_client
