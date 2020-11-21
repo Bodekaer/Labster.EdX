@@ -6,29 +6,13 @@ from openedx.core.djangolib.markup import HTML
 % if settings.FEATURES.get('SHOW_LABSTER_NOTIFICATION'):
 <div id="labster-notification" class="wrapper-msg urgency-low warning">
   <div class="msg">
-    <i class="msg-icon fa fa-warning"></i>
     <div class="msg-content">
-      <h3 class="title">${_("New Labster.com!")}</h3>
       <div class="copy">
         <p>
-          ${_('In order to optimize user experience, we have upgraded the platform.')}<br>
-          ${_('You can find the previous version of the platform {old_labster_link}.').format(
-            old_labster_link='<a href="http://temp.labster.com">{link_text}</a>'.format(link_text=_('here'))
-          )}<br>
-          ${_('If you have any questions, please {link_start}contact us{link_end}.').format(
-              link_start=HTML('<a href="{0}">'.format(settings.LABSTER_TECH_SUPPORT_LINK)),
-              link_end=HTML('</a>')
-          )}
+          ${_('Labster has moved to a new access portal and will discontinue this service after Dec 31, 2020.')}<br />
+          ${_('Please contact Customer Support if you have any questions.')}
         </p>
       </div>
-      <ul class="nav-actions">
-        <li class="action action-dismiss">
-          <a href="#" class="button dismiss-button">
-            <i class="icon fa fa-times-circle"></i>
-            <span class="button-copy">${_("Dismiss")}</span>
-          </a>
-        </li>
-      </ul>
     </div>
   </div>
 </div>
